@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hero RPG</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="../train2-css.css">
+    <style>
+        
+    </style>
+
+</head>
+
+<body>
+
+    <h2>🎮 Hero's Quest</h2>
+
+    <div>💰 Gold: <span id="gold">0</span></div>
+
+    <div id="map"></div>
+
+
+
+    <div id="battle">
+
+        <h2>⚔️ 戰鬥中</h2>
+
+        <hr>
+
+        <h3 id="monsterName">
+            史萊姆
+        </h3>
+
+        <p id="monsterHp">
+            HP：30 / 30
+        </p>
+
+        <hr>
+
+        <h3>😀 勇者</h3>
+
+        <p id="playerHP">
+            HP：100 / 100
+        </p>
+
+        <button id="attackBtn" onclick="attack()">
+            ⚔️ 攻擊
+        </button>
+
+        <button>
+            🛡️ 防禦
+        </button>
+
+        <button>
+            🏃逃跑
+        </button>
+
+    </div>
+
+    <script src="../train2-js.js"></script>
+
+</body>
+
+</html>
