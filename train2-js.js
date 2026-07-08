@@ -5,22 +5,32 @@ let slime = {
   exp: 10
 }
 const size = 10;
+
 let revealed = [];
+
 let mapData = [];
+
 let player = {
   x: 1,
   y: 1,
+
   hp: 100,
+  maxHp: 100,
+
   atk: 15,
+
   gold: 0,
+
   exp: 0,
-  level: 1
+
+  level: 1,
+
+  needExp: 20
 };
 
 let currentMonster = null;
 
 let gameState = "map";
-
 
 // ======================
 // 🎲 生成隨機地圖
@@ -161,18 +171,37 @@ document.addEventListener("keydown", (e) => {
 // ======================
 
 function showBattle() {
+
+
   gameState = "battle";
+
+
   currentMonster = {
+
     name: slime.name,
+
     hp: slime.hp,
+
     atk: slime.atk,
+
     exp: slime.exp
+
   };
 
-  document.getElementById("battle").style.display = "block";
-  document.getElementById("map").style.display = "none";
+
+  addBattleLog(
+    "⚔️ 遭遇 " + currentMonster.name + "！"
+  );
+
+
+  showMessage(
+    "⚔️ 遭遇 " + currentMonster.name + "！"
+  );
+
 
   updateBattleUI();
+
+
 }
 
 
@@ -183,42 +212,180 @@ function showBattle() {
 
 function attack() {
 
-  currentMonster.hp -= player.atk;
 
-  if (currentMonster.hp < 0) {
-    currentMonster.hp = 0;
+  if (currentMonster == null) {
+
+    return;
+
   }
 
+
+  currentMonster.hp -= player.atk;
+
+
+
+  addBattleLog(
+    "😀 勇者造成 "
+    + player.atk +
+    " 點傷害！"
+  );
+
+
+
   updateBattleUI();
+
+
 
   if (currentMonster.hp <= 0) {
 
     endBattle();
 
+    return;
+
   }
+
+
+
+  monsterAttack();
+
+
 }
 
-function endBattle() {
-  alert("🎉 打倒了" + currentMonster.name);
+//怪物攻擊
+function monsterAttack() {
 
-  document.getElementById("battle").style.display = "none";
-  document.getElementById("map").style.display = "grid";
+
+  if (gameState != "battle") {
+
+    return;
+
+  }
+
+
+  player.hp -= currentMonster.atk;
+
+
+
+  addBattleLog(
+    "👾 "
+    + currentMonster.name +
+    "造成 "
+    + currentMonster.atk +
+    " 點傷害"
+  );
+
+
+
+  updateBattleUI();
+
+
+
+  if (player.hp <= 0) {
+
+    gameOver();
+
+  }
+
+}
+
+//底下的戰鬥資訊
+function addBattleLog(text) {
+  const battleLog = document.getElementById("battleLog");
+  battleLog.innerHTML += text + "<br>";
+}
+
+//替代alert跳出式窗
+function showMessage(text) {
+
+
+  let box =
+    document.getElementById("messageBox");
+
+
+  box.style.display = "block";
+
+
+  box.innerText = "";
+
+
+  let index = 0;
+
+
+  let timer = setInterval(() => {
+
+
+    box.innerText += text[index];
+
+
+    index++;
+
+
+    if (index >= text.length) {
+
+      clearInterval(timer);
+
+
+      setTimeout(() => {
+
+
+        box.style.display = "none";
+
+
+      }, 2000);
+
+    }
+
+
+  }, 100);
+
+
+}
+
+//戰鬥結束
+function endBattle() {
+
+
+  addBattleLog(
+    "🎉 打倒了 "
+    + currentMonster.name + "！"
+  );
+
+
+  showMessage(
+    "🎉 勝利！獲得 EXP " + currentMonster.exp
+  );
+
+
+
+  // 清除地圖怪物
 
   mapData[player.y][player.x] = 0;
-  console.log(mapData[player.y][player.x]);
+
+
 
   player.exp += currentMonster.exp;
+
   player.gold += 20;
 
-  document.getElementById("gold").innerText = player.gold;
+
+
+  checkLevelUp();
+
+
+  updatePlayerUI();
+
+
 
   currentMonster = null;
 
+
   gameState = "map";
 
-  
+
 
   drawMap();
+
+
 }
 
 // ======================
@@ -227,14 +394,158 @@ function endBattle() {
 
 function updateBattleUI() {
 
-  document.getElementById("monsterName").innerText =
-    currentMonster.name;
+  if (currentMonster == null) {
 
-  document.getElementById("monsterHp").innerText =
-    "HP：" + currentMonster.hp + " / 30";
 
-  document.getElementById("playerHP").innerText =
-    "HP：" + player.hp + " / 100";
+
+    document.getElementById("monsterName").innerText =
+      currentMonster.name;
+
+    document.getElementById("monsterHp").innerText =
+      "HP：" + currentMonster.hp + " / 30";
+
+    document.getElementById("playerHP").innerText =
+      "HP：" + player.hp + " / " + player.maxHp;
+
+    // 怪物血條
+    let monsterPercent =
+      (currentMonster.hp / 30) * 100;
+
+    let monsterBar =
+      document.getElementById("monsterHPBar");
+
+    monsterBar.style.width =
+      monsterPercent + "%";
+
+
+
+    // 玩家血條
+    let playerPercent =
+      (player.hp / player.maxHp) * 100;
+
+
+    document.getElementById("playerHPBar").style.width =
+      playerPercent + "%";
+
+
+    if (monsterPercent < 30) {
+
+      monsterBar.style.background = "red";
+
+    }
+
+    else if (monsterPercent < 60) {
+
+      monsterBar.style.background = "orange";
+
+    }
+
+    else {
+
+      monsterBar.style.background = "green";
+
+    }
+
+  }
+
+  function updatePlayerUI() {
+
+    document.getElementById("level").innerText =
+      player.level;
+
+    document.getElementById("exp").innerText =
+      player.exp;
+
+    document.getElementById("needExp").innerText =
+      player.needExp;
+
+    document.getElementById("gold").innerText =
+      player.gold;
+
+    return;
+  }
+}
+
+
+//升級
+function checkLevelUp() {
+
+  if (player.exp >= player.needExp) {
+
+
+    player.level++;
+
+    player.exp = 0;
+
+
+    player.maxHp += 20;
+
+    player.hp = player.maxHp;
+
+
+    player.atk += 5;
+
+
+    player.needExp += 20;
+
+
+    showMessage(
+      "🎉 升級成功！\n" +
+      "目前 Lv." + player.level
+    );
+
+
+  }
+
+}
+
+//遊戲結束
+function gameOver() {
+
+
+  document.getElementById("gameOver")
+    .style.display = "flex";
+
+
+  gameState = "over";
+
+
+}
+
+//重來
+function resetGame() {
+
+  player.maxHp = 100;
+  player.hp = player.maxHp;
+  player.gold = 0;
+  player.exp = 0;
+  player.needExp = 20;
+  player.level = 1;
+  player.atk = 15;
+
+  player.x = 1;
+  player.y = 1;
+
+  // 清除目前戰鬥
+  currentMonster = null;
+
+  // 回到探索模式
+  gameState = "map";
+
+  // 重新生成地圖
+  generateMap();
+
+  revealed[player.y][player.x] = true;
+
+  // 更新畫面
+  document.getElementById("gold").innerText = player.gold;
+  document.getElementById("playerHP").innerText = "HP：100 / 100";
+
+  document.getElementById("map").style.display = "grid";
+  document.getElementById("gameOver").style.display = "none";
+
+  drawMap();
+  updatePlayerUI();
 }
 
 
@@ -242,5 +553,7 @@ function updateBattleUI() {
 // 🚀 初始化
 // ======================
 generateMap();
-drawMap();
 revealed[player.y][player.x] = true;
+drawMap();
+showMessage("🎮 勇者開始冒險！");
+

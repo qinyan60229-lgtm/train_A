@@ -8,58 +8,340 @@
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="../train2-css.css">
     <style>
-        
+
     </style>
 
 </head>
 
 <body>
 
-    <h2>🎮 Hero's Quest</h2>
 
-    <div>💰 Gold: <span id="gold">0</span></div>
+    <!-- 遊戲標題 -->
+    <header class="game-title">
 
-    <div id="map"></div>
+        🎮 Hero's Quest
+
+    </header>
 
 
 
-    <div id="battle">
+    <div class="container-fluid">
 
-        <h2>⚔️ 戰鬥中</h2>
 
-        <hr>
+        <!-- 上半部 -->
+        <div class="row game-area">
 
-        <h3 id="monsterName">
-            史萊姆
-        </h3>
 
-        <p id="monsterHp">
-            HP：30 / 30
-        </p>
+            <!-- 左邊 玩家資訊 -->
+            <div class="col-md-3">
 
-        <hr>
 
-        <h3>😀 勇者</h3>
+                <div class="panel">
 
-        <p id="playerHP">
-            HP：100 / 100
-        </p>
 
-        <button id="attackBtn" onclick="attack()">
-            ⚔️ 攻擊
-        </button>
+                    <h3>
+                        😀 勇者資訊
+                    </h3>
 
-        <button>
-            🛡️ 防禦
-        </button>
 
-        <button>
-            🏃逃跑
-        </button>
+                    <hr>
+
+
+                    <p>
+                        ⭐ Level:
+                        <span id="level">
+                            1
+                        </span>
+                    </p>
+
+
+                    <p>
+                        ❤️ HP:
+                        <span id="playerHP">
+                            100 / 100
+                        </span>
+                    </p>
+
+
+
+                    <p>
+                        EXP:
+                        <span id="exp">
+                            0
+                        </span>
+
+                        /
+
+                        <span id="needExp">
+                            20
+                        </span>
+                    </p>
+
+
+
+                    <p>
+                        💰 Gold:
+                        <span id="gold">
+                            0
+                        </span>
+                    </p>
+
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+
+            <!-- 中間地圖 -->
+            <div class="col-md-6">
+
+
+                <div class="panel">
+
+
+                    <h3>
+                        🗺️ 探索區域
+                    </h3>
+
+
+                    <div id="map"></div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+
+
+            <!-- 右邊任務 -->
+            <div class="col-md-3">
+
+
+                <div class="panel">
+
+
+                    <h3>
+                        📜 任務目標
+                    </h3>
+
+
+                    <hr>
+
+
+                    <p>
+                        目前任務：
+                    </p>
+
+
+                    <p id="quest">
+
+                        探索未知迷宮
+
+                    </p>
+
+
+                    <hr>
+
+
+                    <p>
+                        ✔ 未來加入：
+                    </p>
+
+
+                    <ul>
+
+                        <li>
+                            主線任務
+                        </li>
+
+                        <li>
+                            支線任務
+                        </li>
+
+                        <li>
+                            Boss任務
+                        </li>
+
+
+                    </ul>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+        <!-- 下方戰鬥區 -->
+        <div class="row">
+
+
+            <div class="col-12">
+
+
+                <div id="battlePanel" class="panel">
+
+
+                    <h3>
+                        ⚔️ 戰鬥資訊
+                    </h3>
+
+
+
+                    <hr>
+
+
+
+                    <h4 id="monsterName">
+
+                        👾 史萊姆
+
+                    </h4>
+
+
+
+                    <div class="hp-box">
+
+
+                        <div class="hp-bar">
+
+                            <div id="monsterHPBar"></div>
+
+                        </div>
+
+
+                        <p id="monsterHp">
+
+                            HP：30 / 30
+
+                        </p>
+
+
+                    </div>
+
+
+
+
+
+
+                    <hr>
+
+
+
+
+
+                    <button onclick="attack()" class="btn btn-danger">
+
+                        ⚔️ 攻擊
+
+                    </button>
+
+
+
+                    <button class="btn btn-secondary">
+
+                        🛡️ 防禦
+
+                    </button>
+
+
+
+                    <button class="btn btn-warning">
+
+                        🏃逃跑
+
+                    </button>
+
+
+
+
+
+                    <hr>
+
+
+
+
+                    <!-- 永久顯示戰鬥紀錄 -->
+
+                    <div id="battleLog">
+
+                        等待戰鬥...
+
+                    </div>
+
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
 
     </div>
 
+
+
+
+
+
+
+    <!-- 訊息提示 -->
+
+    <div id="messageBox">
+
+    </div>
+
+
+
+
+
+
+    <!-- GAME OVER -->
+
+    <div id="gameOver" class="text-center" style="display:none;">
+
+
+        <h1>
+            💀 GAME OVER 💀
+        </h1>
+
+
+        <button onclick="resetGame()">
+
+            重新開始
+
+        </button>
+
+
+    </div>
+
+
+
+
     <script src="../train2-js.js"></script>
+
+
 
 </body>
 
