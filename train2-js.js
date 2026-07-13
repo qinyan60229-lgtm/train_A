@@ -48,8 +48,10 @@ let player = {
 
   level: 1,
 
-  needExp: 20
+  needExp: 20,
 
+  //防禦狀態
+  isDefending: false
 };
 
 
@@ -315,9 +317,9 @@ document.addEventListener("keydown", function (e) {
 
 
 
-  switch (e.key) {
+  switch (e.key.toLowerCase()) {
 
-
+    case "w":
     case "ArrowUp":
 
       ny--;
@@ -325,7 +327,7 @@ document.addEventListener("keydown", function (e) {
       break;
 
 
-
+    case "s":
     case "ArrowDown":
 
       ny++;
@@ -333,7 +335,7 @@ document.addEventListener("keydown", function (e) {
       break;
 
 
-
+    case "a":
     case "ArrowLeft":
 
       nx--;
@@ -341,7 +343,7 @@ document.addEventListener("keydown", function (e) {
       break;
 
 
-
+    case "d":
     case "ArrowRight":
 
       nx++;
@@ -597,7 +599,48 @@ function attack() {
 
 }
 
+// ======================
+// 🛡 防禦功能
+// ======================
 
+function defend() {
+
+
+  if (gameState !== "battle") {
+
+    return;
+
+  }
+
+
+  if (currentMonster === null) {
+
+    return;
+
+  }
+
+
+
+  player.isDefending = true;
+
+
+
+  addBattleLog(
+    "🛡 勇者進入防禦姿態！"
+  );
+
+
+  showMessage(
+    "🛡 防禦成功，降低傷害！"
+  );
+
+
+  // 怪物攻擊
+
+  monsterAttack();
+
+
+}
 
 
 
@@ -624,8 +667,32 @@ function monsterAttack() {
 
 
 
-  player.hp -= currentMonster.atk;
+  let damage = currentMonster.atk;
 
+
+
+  // 如果玩家防禦
+
+  if (player.isDefending) {
+
+
+    damage =
+      Math.floor(
+        damage * 0.5
+      );
+
+
+    addBattleLog(
+      "🛡 防禦減少傷害！"
+    );
+
+
+  }
+
+
+  // 扣血
+
+  player.hp -= damage;
 
 
   if (player.hp < 0) {
@@ -634,6 +701,9 @@ function monsterAttack() {
 
   }
 
+  // 防禦解除
+
+  player.isDefending = false;
 
 
   addBattleLog(
@@ -664,6 +734,98 @@ function monsterAttack() {
 
   }
 
+
+
+}
+
+// ======================
+// 🏃 逃跑功能
+// ======================
+
+function runAway() {
+
+
+  // 不是戰鬥不能逃跑
+
+  if (gameState !== "battle") {
+
+    return;
+
+  }
+
+
+  if (currentMonster === null) {
+
+    return;
+
+  }
+
+
+
+  // 逃跑成功率
+  // 70%成功
+
+  let chance = Math.random();
+
+
+
+  if (chance < 0.7) {
+
+
+    addBattleLog(
+      "🏃 成功逃離戰鬥！"
+    );
+
+
+    showMessage(
+      "🏃 逃跑成功！"
+    );
+
+
+    currentMonster = null;
+
+
+    gameState = "map";
+
+
+
+    document
+      .getElementById("battlePanel")
+      .style.display = "none";
+
+
+
+    document
+      .getElementById("map")
+      .style.display = "grid";
+
+
+
+    drawMap();
+
+
+
+  }
+
+  else {
+
+
+    addBattleLog(
+      "❌ 逃跑失敗！"
+    );
+
+
+    showMessage(
+      "❌ 逃跑失敗！"
+    );
+
+
+    // 失敗後怪物攻擊
+
+    monsterAttack();
+
+
+  }
 
 
 }
@@ -1126,6 +1288,8 @@ function resetGame() {
 
   player.gold = 0;
 
+
+  player.isDefending = false;
 
 
   currentMonster = null;
