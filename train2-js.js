@@ -77,6 +77,17 @@ function generateMap() {
 
   revealed = [];
 
+  const safeZone = [
+    { x: 1, y: 1 },
+
+    { x: 2, y: 1 },
+
+    { x: 1, y: 2 },
+
+    { x: 2, y: 2 }
+  ];
+
+
 
   for (let y = 0; y < size; y++) {
 
@@ -102,34 +113,45 @@ function generateMap() {
 
       else {
 
+        let isSafe = safeZone.some(pos =>
+          pos.x === x && pos.y === y
+        );
 
-        let random = Math.random();
-
-
-        // 金幣
-
-        if (random < 0.08) {
-
-          row.push(2);
-
-        }
-
-
-        // 怪物
-
-        else if (random < 0.15) {
-
-          row.push(3);
-
-        }
-
-
-        // 空地
-
-        else {
+        if (isSafe) {
 
           row.push(0);
 
+        }
+        else {
+
+          let random = Math.random();
+
+
+          // 金幣
+
+          if (random < 0.08) {
+
+            row.push(2);
+
+          }
+
+
+          // 怪物
+
+          else if (random < 0.15) {
+
+            row.push(3);
+
+          }
+
+
+          // 空地
+
+          else {
+
+            row.push(0);
+
+          }
         }
 
       }
@@ -184,6 +206,16 @@ function drawMap() {
 
       cell.classList.add("cell");
 
+      if (
+        (x === 1 && y === 1) ||
+        (x === 2 && y === 1) ||
+        (x === 1 && y === 2) ||
+        (x === 2 && y === 2)
+      ) {
+
+        cell.classList.add("safe-zone");
+
+      }
 
 
       // 未探索
@@ -191,7 +223,7 @@ function drawMap() {
       if (!revealed[y][x]) {
 
 
-        cell.style.background = "#000";
+        cell.style.background = "#ac78b6";
 
 
       }
@@ -320,37 +352,24 @@ document.addEventListener("keydown", function (e) {
   switch (e.key.toLowerCase()) {
 
     case "w":
-    case "ArrowUp":
-
+    case "arrowup":
       ny--;
-
       break;
-
 
     case "s":
-    case "ArrowDown":
-
+    case "arrowdown":
       ny++;
-
       break;
-
 
     case "a":
-    case "ArrowLeft":
-
+    case "arrowleft":
       nx--;
-
       break;
-
 
     case "d":
-    case "ArrowRight":
-
+    case "arrowright":
       nx++;
-
       break;
-
-
 
     default:
 
@@ -1008,6 +1027,14 @@ function updatePlayerUI() {
     +
     "%";
 
+  // EXP 血條
+  let expPercent = Math.min(
+    100,
+    (player.exp / player.needExp) * 100
+  );
+
+  document.getElementById("expBar").style.width =
+    expPercent + "%";
 
 
 }
@@ -1161,56 +1188,46 @@ function addBattleLog(text) {
 
 function checkLevelUp() {
 
-
-
-  while (
-    player.exp >= player.needExp
-  ) {
-
-
-
-    player.exp -= player.needExp;
-
-
-
-    player.level++;
-
-
-
-    player.needExp += 20;
-
-
-
-    player.maxHp += 20;
-
-
-
-    player.hp =
-      player.maxHp;
-
-
-
-    player.atk += 5;
-
-
-
-    showMessage(
-
-      "🎉 升級成功！\n"
-      +
-      "目前 Lv."
-      +
-      player.level
-
-    );
-
+  if (player.exp < player.needExp) {
+    updatePlayerUI();
+    return;
   }
 
+  // ① 先讓經驗條滿
+  document.getElementById("expBar").style.width = "100%";
 
+  // ② 停留一下
+  setTimeout(() => {
+    document.getElementById("expBar").style.width = "0%";
+
+    // ② 停留一下
+    setTimeout(() => {
+
+      player.exp -= player.needExp;
+
+      player.level++;
+
+      player.needExp += 20;
+
+      player.maxHp += 20;
+
+      player.hp =
+
+        player.maxHp;
+
+      player.atk += 5;
+
+      updatePlayerUI();
+
+      showMessage(
+        "🎉 升級成功！\n" + "目前 Lv." + player.level
+      );
+
+    }, 200);
+
+  }, 500);
 
 }
-
-
 
 
 
@@ -1332,6 +1349,12 @@ function resetGame() {
 
   drawMap();
 
+  // 清空怪物資訊
+  document.getElementById("monsterName").innerText = "沒有敵人";
+  document.getElementById("monsterHp").innerText = "HP：--";
+  document.getElementById("monsterHPBar").style.width = "0%";
+
+  showMessage("🎮 勇者開始冒險！");
 
 
 }
