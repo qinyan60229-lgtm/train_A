@@ -8,20 +8,46 @@
 // 🐉 怪物資料
 // ======================
 
-let slime = {
-  name: "史萊姆",
-  hp: 30,
-  maxHp: 30,
-  atk: 5,
-  exp: 10
-};
+let monsters = [
+
+  {
+    name: "史萊姆",
+    hp: 30,
+    maxHp: 30,
+    atk: 5,
+    exp: 10
+  },
+
+
+  {
+    name: "哥布林",
+    hp: 50,
+    maxHp: 50,
+    atk: 8,
+    exp: 20
+  },
+
+
+  {
+    name: "骷髏兵",
+    hp: 80,
+    maxHp: 80,
+    atk: 12,
+    exp: 35
+  }
+
+];
 
 
 // ======================
-// 🌍 地圖設定
+// 🗺️ 迷宮樓層
 // ======================
 
 const size = 10;
+
+let currentFloor = 1;
+
+let maxFloor = 10;
 
 let mapData = [];
 
@@ -65,7 +91,38 @@ let gameState = "map";
 // 目前戰鬥怪物
 let currentMonster = null;
 
+// ======================
+// 👾 新增隨機怪物
+// ======================
 
+function createMonster() {
+
+
+  let random =
+    Math.floor(
+      Math.random() * monsters.length
+    );
+
+
+  let monster = monsters[random];
+
+
+  return {
+
+    name: monster.name,
+
+    hp: monster.hp,
+
+    maxHp: monster.maxHp,
+
+    atk: monster.atk,
+
+    exp: monster.exp
+
+  };
+
+
+}
 
 // ======================
 // 🎲 生成地圖
@@ -138,7 +195,7 @@ function generateMap() {
 
           // 怪物
 
-          else if (random < 0.15) {
+          else if (random < 0.15 + currentFloor * 0.02) {
 
             row.push(3);
 
@@ -152,13 +209,14 @@ function generateMap() {
             row.push(0);
 
           }
+          
         }
-
+        
       }
 
-
+      
       fogRow.push(false);
-
+      
     }
 
 
@@ -167,8 +225,9 @@ function generateMap() {
     revealed.push(fogRow);
 
   }
-
+  mapData[size-2][size-2] = 4;
 }
+
 
 
 
@@ -223,7 +282,7 @@ function drawMap() {
       if (!revealed[y][x]) {
 
 
-        cell.style.background = "#ac78b6";
+        cell.style.background = "#524949";
 
 
       }
@@ -262,6 +321,13 @@ function drawMap() {
 
             break;
 
+          case 4:
+
+            cell.classList.add("exit");
+
+            cell.innerText = "🚪";
+
+            break;
 
         }
 
@@ -431,6 +497,15 @@ document.addEventListener("keydown", function (e) {
 
   }
 
+  // 進入下一關
+
+  if (mapData[player.y][player.x] === 4) {
+
+    nextFloor();
+
+    return;
+
+  }
 
 
   drawMap();
@@ -492,23 +567,7 @@ function showBattle() {
 
   gameState = "battle";
 
-
-
-  currentMonster = {
-
-    name: slime.name,
-
-    hp: slime.hp,
-
-    maxHp: slime.maxHp,
-
-    atk: slime.atk,
-
-    exp: slime.exp
-
-  };
-
-
+  currentMonster = createMonster();
 
   document
     .getElementById("battlePanel")
@@ -1403,6 +1462,52 @@ function showMessage(text) {
 
   }, 2000);
 
+
+
+}
+
+function nextFloor() {
+
+
+  if (currentFloor >= maxFloor) {
+
+    showMessage(
+      "🏆 恭喜通關！"
+    );
+
+    return;
+
+  }
+
+
+
+  currentFloor++;
+
+
+
+  showMessage(
+    "🚪 進入第 "
+    +
+    currentFloor
+    +
+    " 層！"
+  );
+
+
+
+  player.x = 1;
+  player.y = 1;
+
+
+
+  generateMap();
+
+
+
+  revealed[player.y][player.x] = true;
+
+
+  drawMap();
 
 
 }

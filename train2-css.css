@@ -130,8 +130,20 @@ body {
 
 .monster {
     background: crimson;
+    animation: monsterGlow 1s infinite alternate;
 }
 
+@keyframes monsterGlow {
+
+    from {
+        box-shadow: 0 0 5px red;
+    }
+
+    to {
+        box-shadow: 0 0 20px red;
+    }
+
+}
 
 
 /* =====================
@@ -288,4 +300,26 @@ li {
     align-items: center;
     flex-direction: column;
     z-index: 1000;
+}
+
+/* =====================
+   出口
+===================== */
+.exit {
+    background: #6a0dad;
+    color: white;
+    font-size: 28px;
+    animation: exitGlow 1s infinite alternate;
+}
+
+@keyframes exitGlow {
+
+    from {
+        box-shadow: 0 0 5px #b266ff;
+    }
+
+    to {
+        box-shadow: 0 0 18px #d9a3ff;
+    }
+
 }
