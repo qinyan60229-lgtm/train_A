@@ -323,3 +323,12 @@ li {
     }
 
 }
+
+/* 寶箱外觀 */
+.chest {
+
+    background: #8b4513;
+
+    border: 2px solid gold;
+
+}

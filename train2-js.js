@@ -3,6 +3,14 @@
 // 核心遊戲程式
 // ======================
 
+// 地圖種類
+// 0 空地
+// 1 牆
+// 2 金幣
+// 3 怪物
+// 4 出口
+// 5 寶箱
+
 
 // ======================
 // 🐉 怪物資料
@@ -42,6 +50,7 @@ let monsters = [
 // ======================
 // 🗺️ 迷宮樓層
 // ======================
+let exitUnlocked = false;
 
 const size = 10;
 
@@ -75,6 +84,8 @@ let player = {
   level: 1,
 
   needExp: 20,
+
+  potion: 3,
 
   //防禦狀態
   isDefending: false
@@ -134,6 +145,8 @@ function generateMap() {
 
   revealed = [];
 
+  exitUnlocked = false;
+
   const safeZone = [
     { x: 1, y: 1 },
 
@@ -192,6 +205,12 @@ function generateMap() {
 
           }
 
+          // 寶箱
+          else if (random < 0.11) {
+
+            row.push(5);
+
+          }
 
           // 怪物
 
@@ -209,14 +228,14 @@ function generateMap() {
             row.push(0);
 
           }
-          
+
         }
-        
+
       }
 
-      
+
       fogRow.push(false);
-      
+
     }
 
 
@@ -224,12 +243,39 @@ function generateMap() {
 
     revealed.push(fogRow);
 
+
   }
-  mapData[size-2][size-2] = 4;
+
+  createExit();
 }
 
+// ======================
+// 🚪 生成出口
+// ======================
 
+function createExit() {
 
+  while (true) {
+
+    let x = Math.floor(Math.random() * (size - 2)) + 1;
+    let y = Math.floor(Math.random() * (size - 2)) + 1;
+
+    // 不生成在出生安全區
+    if (x <= 2 && y <= 2) {
+      continue;
+    }
+
+    // 必須是空地
+    if (mapData[y][x] !== 0) {
+      continue;
+    }
+
+    mapData[y][x] = 4;
+    break;
+
+  }
+
+}
 
 
 // ======================
@@ -323,9 +369,20 @@ function drawMap() {
 
           case 4:
 
-            cell.classList.add("exit");
+            if (exitUnlocked) {
 
-            cell.innerText = "🚪";
+              cell.classList.add("exit");
+              cell.innerText = "🚪";
+
+            }
+
+            break;
+
+          case 5:
+
+            cell.classList.add("chest");
+
+            cell.innerText = "📦";
 
             break;
 
@@ -481,13 +538,43 @@ document.addEventListener("keydown", function (e) {
 
   revealed[player.y][player.x] = true;
 
+  // ======================
+  // 檢查是否探索完成
+  // ======================
+
+  if (
+    !exitUnlocked &&
+    checkExploreComplete()
+  ) {
+
+    exitUnlocked = true;
+
+    showMessage(
+      "✨ 出口已開啟！"
+    );
+
+  }
+
 
 
   // 撿金幣
 
   collectCoin();
 
+  // 開啟寶箱
 
+  if (
+    mapData[player.y][player.x] === 5
+  ) {
+
+    openChest();
+
+
+    // 寶箱消失
+
+    mapData[player.y][player.x] = 0;
+
+  }
 
   // 遇到怪物
 
@@ -495,23 +582,24 @@ document.addEventListener("keydown", function (e) {
 
     showBattle();
 
-  }
-
-  // 進入下一關
-
-  if (mapData[player.y][player.x] === 4) {
-
-    nextFloor();
-
     return;
 
   }
 
+  // 進入下一關
+
+  if (
+    mapData[player.y][player.x] === 4 &&
+    exitUnlocked
+  ) {
+
+    nextFloor();
+
+    return;
+  }
+
 
   drawMap();
-
-
-
 });
 
 
@@ -551,8 +639,75 @@ function collectCoin() {
 
 }
 
+// ======================
+// 📦 開啟寶箱
+// ======================
+
+function openChest() {
 
 
+  let reward =
+    Math.random();
+
+
+
+  if (reward < 0.5) {
+
+
+    player.gold += 50;
+
+
+    showMessage(
+      "📦 打開寶箱！\n獲得 50 金幣"
+    );
+
+
+  }
+
+
+  else {
+
+
+    player.potion++;
+
+
+    showMessage(
+      "📦 打開寶箱！\n獲得治療藥水 x1"
+    );
+
+
+  }
+
+
+
+  updatePlayerUI();
+
+
+}
+
+// ======================
+// 🗺️ 檢查探索率
+// ======================
+
+function checkExploreComplete() {
+
+  for (let y = 1; y < size - 1; y++) {
+
+    for (let x = 1; x < size - 1; x++) {
+
+      if (!revealed[y][x]) {
+
+        return false;
+
+      }
+
+    }
+
+  }
+
+  return true;
+
+}
 
 
 
@@ -909,6 +1064,83 @@ function runAway() {
 }
 
 // ======================
+// 🧪 新增咕嚕咕嚕
+// ======================
+
+function usePotion() {
+
+
+  // 只能戰鬥使用
+  if (gameState !== "battle") {
+
+    showMessage(
+      "⚔️ 戰鬥中才能使用藥水！"
+    );
+
+    return;
+
+  }
+
+
+
+  if (player.potion <= 0) {
+
+    showMessage(
+      "❌ 沒有藥水！"
+    );
+
+    return;
+
+  }
+
+
+
+  if (player.hp >= player.maxHp) {
+
+    showMessage(
+      "❤️ HP 已滿！"
+    );
+
+    return;
+
+  }
+
+
+
+  let heal = 50;
+
+
+  player.hp += heal;
+
+
+  if (player.hp > player.maxHp) {
+
+    player.hp = player.maxHp;
+
+  }
+
+
+  player.potion--;
+
+
+  showMessage(
+    "🧪 使用藥水，恢復50 HP"
+  );
+
+
+  updatePlayerUI();
+
+  updateBattleUI();
+
+  setTimeout(() => {
+
+    monsterAttack();
+
+  }, 1000);
+
+}
+
+// ======================
 // 🎮 更新戰鬥資訊
 // ======================
 
@@ -1095,6 +1327,8 @@ function updatePlayerUI() {
   document.getElementById("expBar").style.width =
     expPercent + "%";
 
+  document.getElementById("potion").innerText =
+    player.potion;
 
 }
 
@@ -1363,6 +1597,9 @@ function resetGame() {
 
 
   player.gold = 0;
+
+
+  player.potion = 0;
 
 
   player.isDefending = false;
