@@ -10,7 +10,7 @@
 // 3 怪物
 // 4 出口
 // 5 寶箱
-
+// 6 商人
 
 // ======================
 // 🐉 怪物資料
@@ -85,12 +85,18 @@ let player = {
 
   needExp: 20,
 
-  potion: 3,
+  potion: 0,
 
+  maxPotion: 10,
   //防禦狀態
   isDefending: false
 };
 
+// ======================
+// 🧙 新增商人變數
+// ======================
+
+let merchant = null;
 
 // ======================
 // ⚔️ 遊戲狀態
@@ -250,6 +256,68 @@ function generateMap() {
 }
 
 // ======================
+// 🧙 生成流浪商人
+// ======================
+
+function createMerchant() {
+
+
+  merchant = null;
+
+
+  // 70%機率沒有商人
+
+  if (Math.random() < 0.7) {
+
+    return;
+
+  }
+
+
+
+  let x;
+  let y;
+
+
+
+  do {
+
+
+    x =
+      Math.floor(Math.random() * size);
+
+
+    y =
+      Math.floor(Math.random() * size);
+
+
+
+  }
+  while (
+
+    mapData[y][x] !== 0 ||
+
+    (x === 1 && y === 1)
+
+  );
+
+
+
+  merchant = {
+
+    x: x,
+
+    y: y
+
+  };
+
+
+  mapData[y][x] = 6;
+
+
+}
+
+// ======================
 // 🚪 生成出口
 // ======================
 
@@ -386,6 +454,13 @@ function drawMap() {
 
             break;
 
+          case 6:
+
+            cell.classList.add("merchant");
+
+            cell.innerText = "🧙";
+
+            break;
         }
 
       }
@@ -576,6 +651,17 @@ document.addEventListener("keydown", function (e) {
 
   }
 
+  //遇到商人
+
+  if (
+    mapData[player.y][player.x] === 6
+    && gameState === "map"
+  ) {
+
+    openShop();
+
+  }
+
   // 遇到怪物
 
   if (mapData[player.y][player.x] === 3) {
@@ -660,27 +746,98 @@ function openChest() {
     showMessage(
       "📦 打開寶箱！\n獲得 50 金幣"
     );
-
-
   }
-
-
   else {
 
+    if (player.potion < player.maxPotion) {
 
-    player.potion++;
+      player.potion++;
 
+      showMessage(
+        "📦 獲得治療藥水");
 
-    showMessage(
-      "📦 打開寶箱！\n獲得治療藥水 x1"
-    );
+    }
 
+    else {
+
+      showMessage(
+        "📦 找到藥水，但背包已滿");
+
+    }
 
   }
 
 
 
   updatePlayerUI();
+
+
+}
+
+// ======================
+// 🗺️ 商店功能
+// ======================
+
+function openShop() {
+
+  gameState = "shop";
+
+  document
+    .getElementById("shop")
+    .style.display = "block";
+  
+}
+
+
+
+function closeShop() {
+
+  gameState = "map";
+
+  document
+    .getElementById("shop")
+    .style.display = "none";
+
+}
+//購買
+function buyPotion() {
+
+
+  if (player.gold < 50) {
+
+    showMessage(
+      "❌ Gold不足"
+    );
+
+    return;
+
+  }
+
+
+
+  if (player.potion >= player.maxPotion) {
+
+    showMessage(
+      "🧪 藥水已滿"
+    );
+
+    return;
+
+  }
+
+
+
+  player.gold -= 50;
+
+  player.potion++;
+
+
+  updatePlayerUI();
+
+
+  showMessage(
+    "🧪 購買治療藥水"
+  );
 
 
 }
@@ -946,7 +1103,7 @@ function monsterAttack() {
     +
     "造成 "
     +
-    currentMonster.atk
+    damage
     +
     " 點傷害"
 
@@ -1327,9 +1484,12 @@ function updatePlayerUI() {
   document.getElementById("expBar").style.width =
     expPercent + "%";
 
+  //藥水
   document.getElementById("potion").innerText =
     player.potion;
-
+  //最大上限藥水
+  document.getElementById("maxPotion").innerText =
+    player.maxPotion;
 }
 
 
@@ -1386,12 +1546,25 @@ function endBattle() {
 
   checkLevelUp();
 
+  // 10%掉藥水
 
+  if (
+
+    Math.random() < 0.1 &&
+
+    player.potion < player.maxPotion
+
+  ) {
+
+    player.potion++;
+
+    addBattleLog(
+      "🧪 怪物掉落治療藥水！"
+    );
+
+  }
 
   updatePlayerUI();
-
-
-
 
   currentMonster = null;
 
@@ -1615,7 +1788,7 @@ function resetGame() {
 
   generateMap();
 
-
+  createMerchant();
 
   revealed[player.y][player.x] = true;
 
@@ -1739,7 +1912,7 @@ function nextFloor() {
 
   generateMap();
 
-
+  createMerchant();
 
   revealed[player.y][player.x] = true;
 
