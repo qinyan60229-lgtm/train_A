@@ -11,6 +11,7 @@
 // 4 出口
 // 5 寶箱
 // 6 商人
+// 7 BOSS
 
 // ======================
 // 🐉 怪物資料
@@ -25,6 +26,9 @@ let monsters = [
     atk: 5,
     exp: 10,
     gold: 10,
+
+    rarity: "normal",
+
     minFloor: 1,
     maxFloor: 3
   },
@@ -37,6 +41,9 @@ let monsters = [
     atk: 8,
     exp: 20,
     gold: 25,
+
+    rarity: "normal",
+
     minFloor: 4,
     maxFloor: 6
   },
@@ -49,12 +56,33 @@ let monsters = [
     atk: 12,
     exp: 35,
     gold: 50,
+
+    rarity: "normal",
+
     minFloor: 7,
     maxFloor: 9
   }
 
 ];
 
+// ======================
+// 👑 Boss
+// ======================
+
+let boss = {
+
+  name: "👑 深淵魔王",
+
+  hp: 500,
+  maxHp: 500,
+
+  atk: 30,
+
+  exp: 200,
+
+  gold: 500
+
+};
 
 // ======================
 // 🗺️ 迷宮樓層
@@ -143,7 +171,7 @@ function createMonster() {
     availableMonsters[random];
 
 
-  return {
+  let newMonster = {
 
     name: monster.name,
 
@@ -155,9 +183,32 @@ function createMonster() {
 
     exp: monster.exp,
 
-    gold: monster.gold
+    gold: monster.gold,
+
+    rarity: "普通"
 
   };
+
+  // 20%機率變精英怪
+  if (Math.random() < 0.2) {
+
+    newMonster.name =
+      "⭐ 精英 " + monster.name;
+
+    newMonster.hp *= 2;
+
+    newMonster.maxHp *= 2;
+
+    newMonster.atk += 5;
+
+    newMonster.exp *= 2;
+
+    newMonster.gold *= 2;
+
+    newMonster.rarity = "elite";
+  }
+
+  return newMonster;
 
 }
 
@@ -166,7 +217,13 @@ function createMonster() {
 // ======================
 
 function generateMap() {
+  if (currentFloor === maxFloor) {
 
+    generateBossRoom();
+
+    return;
+
+  }
   mapData = [];
 
   revealed = [];
@@ -273,6 +330,51 @@ function generateMap() {
   }
 
   createExit();
+}
+//BOSS關卡
+function generateBossRoom() {
+
+  mapData = [];
+
+  revealed = [];
+
+  exitUnlocked = false;
+
+  for (let y = 0; y < size; y++) {
+
+    let row = [];
+    let fog = [];
+
+    for (let x = 0; x < size; x++) {
+
+      if (
+        x === 0 ||
+        y === 0 ||
+        x === size - 1 ||
+        y === size - 1
+      ) {
+
+        row.push(1);
+
+      } else {
+
+        row.push(0);
+
+      }
+
+      fog.push(true);
+
+    }
+
+    mapData.push(row);
+
+    revealed.push(fog);
+
+  }
+
+  // Boss位置
+  mapData[5][5] = 7;
+
 }
 
 // ======================
@@ -479,6 +581,14 @@ function drawMap() {
             cell.classList.add("merchant");
 
             cell.innerText = "🧙";
+
+            break;
+
+          case 7:
+
+            cell.classList.add("boss");
+
+            cell.innerText = "👑";
 
             break;
         }
@@ -702,6 +812,16 @@ document.addEventListener("keydown", function (e) {
     nextFloor();
 
     return;
+  }
+
+  // 遇到BOSS
+
+  if (mapData[player.y][player.x] == 7) {
+
+    showBossBattle();
+
+    return;
+
   }
 
 
@@ -1539,7 +1659,7 @@ function endBattle() {
   showMessage(
 
     "🎉 勝利！\n獲得 EXP " + currentMonster.exp +
-            "\n獲得 Gold" + currentMonster.gold
+    "\n獲得 Gold" + currentMonster.gold
   );
 
 
