@@ -23,7 +23,10 @@ let monsters = [
     hp: 30,
     maxHp: 30,
     atk: 5,
-    exp: 10
+    exp: 10,
+    gold: 10,
+    minFloor: 1,
+    maxFloor: 3
   },
 
 
@@ -32,7 +35,10 @@ let monsters = [
     hp: 50,
     maxHp: 50,
     atk: 8,
-    exp: 20
+    exp: 20,
+    gold: 25,
+    minFloor: 4,
+    maxFloor: 6
   },
 
 
@@ -41,7 +47,10 @@ let monsters = [
     hp: 80,
     maxHp: 80,
     atk: 12,
-    exp: 35
+    exp: 35,
+    gold: 50,
+    minFloor: 7,
+    maxFloor: 9
   }
 
 ];
@@ -114,14 +123,24 @@ let currentMonster = null;
 
 function createMonster() {
 
+  let availableMonsters =
+    monsters.filter(monster =>
 
-  let random =
-    Math.floor(
-      Math.random() * monsters.length
+      currentFloor >= monster.minFloor
+      &&
+      currentFloor <= monster.maxFloor
+
     );
 
 
-  let monster = monsters[random];
+  let random =
+    Math.floor(
+      Math.random() * availableMonsters.length
+    );
+
+
+  let monster =
+    availableMonsters[random];
 
 
   return {
@@ -134,10 +153,11 @@ function createMonster() {
 
     atk: monster.atk,
 
-    exp: monster.exp
+    exp: monster.exp,
+
+    gold: monster.gold
 
   };
-
 
 }
 
@@ -785,7 +805,7 @@ function openShop() {
   document
     .getElementById("shop")
     .style.display = "block";
-  
+
 }
 
 
@@ -1510,11 +1530,7 @@ function endBattle() {
 
   addBattleLog(
 
-    "🎉 打倒 "
-    +
-    currentMonster.name
-    +
-    "！"
+    "🎉 打倒 " + currentMonster.name + "！"
 
   );
 
@@ -1522,10 +1538,8 @@ function endBattle() {
 
   showMessage(
 
-    "🎉 勝利！獲得 EXP "
-    +
-    currentMonster.exp
-
+    "🎉 勝利！\n獲得 EXP " + currentMonster.exp +
+            "\n獲得 Gold" + currentMonster.gold
   );
 
 
@@ -1542,7 +1556,7 @@ function endBattle() {
 
   player.exp += currentMonster.exp;
 
-
+  player.gold += currentMonster.gold;
 
   checkLevelUp();
 
