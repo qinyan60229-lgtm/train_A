@@ -12,6 +12,7 @@
 // 5 寶箱
 // 6 商人
 // 7 BOSS
+// 8 火焰
 
 // ======================
 // 🐉 怪物資料
@@ -71,6 +72,8 @@ let monsters = [
 
 let boss = {
 
+  type: "boss",
+
   name: "👑 深淵魔王",
 
   hp: 500,
@@ -80,7 +83,9 @@ let boss = {
 
   exp: 200,
 
-  gold: 500
+  gold: 500,
+
+  turn: 0
 
 };
 
@@ -91,7 +96,7 @@ let exitUnlocked = false;
 
 const size = 10;
 
-let currentFloor = 1;
+let currentFloor = 10;
 
 let maxFloor = 10;
 
@@ -125,6 +130,8 @@ let player = {
   potion: 0,
 
   maxPotion: 10,
+
+  bossTurn: 0,
   //防禦狀態
   isDefending: false
 };
@@ -173,6 +180,8 @@ function createMonster() {
 
   let newMonster = {
 
+    type: "normal",
+
     name: monster.name,
 
     hp: monster.hp,
@@ -191,6 +200,8 @@ function createMonster() {
 
   // 20%機率變精英怪
   if (Math.random() < 0.2) {
+
+    newMonster.type = "elite"
 
     newMonster.name =
       "⭐ 精英 " + monster.name;
@@ -217,6 +228,14 @@ function createMonster() {
 // ======================
 
 function generateMap() {
+
+  mapData = [];
+
+  revealed = [];
+
+  exitUnlocked = false;
+
+  // 第10層特殊處理
   if (currentFloor === maxFloor) {
 
     generateBossRoom();
@@ -224,11 +243,6 @@ function generateMap() {
     return;
 
   }
-  mapData = [];
-
-  revealed = [];
-
-  exitUnlocked = false;
 
   const safeZone = [
     { x: 1, y: 1 },
@@ -361,7 +375,7 @@ function generateBossRoom() {
         row.push(0);
 
       }
-
+      //boss房全部開啟
       fog.push(true);
 
     }
@@ -371,10 +385,20 @@ function generateBossRoom() {
     revealed.push(fog);
 
   }
+  //玩家出生點
+  player.x = 1;
+  player.y = 1;
+
 
   // Boss位置
-  mapData[5][5] = 7;
+  mapData[3][5] = 7;
 
+  // 火焰
+  mapData[2][4] = 8;
+  mapData[2][5] = 8;
+
+  mapData[4][4] = 8;
+  mapData[4][5] = 8;
 }
 
 // ======================
@@ -591,6 +615,14 @@ function drawMap() {
             cell.innerText = "👑";
 
             break;
+
+          case 8:
+
+            cell.classList.add("lava");
+
+            cell.innerText = "🔥";
+
+            break;
         }
 
       }
@@ -748,6 +780,7 @@ document.addEventListener("keydown", function (e) {
   // ======================
 
   if (
+    currentFloor !== maxFloor &&
     !exitUnlocked &&
     checkExploreComplete()
   ) {
@@ -816,9 +849,9 @@ document.addEventListener("keydown", function (e) {
 
   // 遇到BOSS
 
-  if (mapData[player.y][player.x] == 7) {
+  if (mapData[player.y][player.x] === 7) {
 
-    showBossBattle();
+    bossEncounter();
 
     return;
 
@@ -828,8 +861,27 @@ document.addEventListener("keydown", function (e) {
   drawMap();
 });
 
+// ======================
+// 👑 boss開場白
+// ======================
+
+function bossEncounter() {
+
+  showMessage(
+    "👑 深淵魔王降臨！"
+  );
 
 
+  setTimeout(() => {
+
+
+    showBattle(boss);
+
+
+  }, 1500);
+
+
+}
 
 
 // ======================
@@ -1014,12 +1066,21 @@ function checkExploreComplete() {
 // ======================
 
 
-function showBattle() {
-
+function showBattle(monster = null) {
 
   gameState = "battle";
 
-  currentMonster = createMonster();
+
+  if (monster) {
+
+    currentMonster = { ...monster };
+
+  }
+  else {
+
+    currentMonster = createMonster();
+
+  }
 
   document
     .getElementById("battlePanel")
@@ -1249,7 +1310,21 @@ function monsterAttack() {
 
   );
 
+  if (currentMonster.type === "boss") {
 
+    currentMonster.turn++;
+
+    if (currentMonster.turn % 3 === 0) {
+
+      damage += 20;
+
+      addBattleLog(
+        "🔥 深淵魔王施放爆炎！"
+      );
+
+    }
+
+  }
 
   updateBattleUI();
 
@@ -1274,7 +1349,15 @@ function monsterAttack() {
 
 function runAway() {
 
+  if (currentMonster.type === "boss") {
 
+    showMessage(
+      "👑 得罪了魔王還想跑，沒那麼容易！"
+    );
+
+    return;
+
+  }
   // 不是戰鬥不能逃跑
 
   if (gameState !== "battle") {
@@ -1461,10 +1544,18 @@ function updateBattleUI() {
 
 
 
-  if (monsterName) {
+  if (currentMonster.type === "boss") {
+
+    monsterName.innerText =
+      "👑 " + currentMonster.name;
+    monsterName.classList.add("boss-name");
+
+  }
+  else {
 
     monsterName.innerText =
       "👾 " + currentMonster.name;
+    monsterName.classList.remove("boss-name");
 
   }
 
@@ -1472,14 +1563,30 @@ function updateBattleUI() {
 
   if (monsterHp) {
 
-    monsterHp.innerText =
-      "HP："
-      +
-      currentMonster.hp
-      +
-      " / "
-      +
-      currentMonster.maxHp;
+
+    if (currentMonster.type === "boss") {
+
+
+      monsterHp.innerText =
+        "🔥 魔王生命：" + currentMonster.hp + " / " + currentMonster.maxHp;
+
+
+    }
+    else {
+
+
+      monsterHp.innerText =
+        "HP："
+        +
+        currentMonster.hp
+        +
+        " / "
+        +
+        currentMonster.maxHp;
+
+
+    }
+
 
   }
 
@@ -1502,6 +1609,20 @@ function updateBattleUI() {
 
   if (monsterBar) {
 
+    if (currentMonster.type === "boss") {
+
+
+      monsterBar.classList.add("boss-hp");
+
+
+    }
+    else {
+
+
+      monsterBar.classList.remove("boss-hp");
+
+
+    }
     monsterBar.style.width =
       monsterPercent + "%";
 
@@ -1658,11 +1779,34 @@ function endBattle() {
 
   showMessage(
 
-    "🎉 勝利！\n獲得 EXP " + currentMonster.exp +
+    "🎉 勝利！\n" +
+    "獲得 EXP " + currentMonster.exp +
     "\n獲得 Gold" + currentMonster.gold
   );
 
+  // 發獎勵
 
+  player.exp += currentMonster.exp;
+
+  player.gold += currentMonster.gold;
+
+  updatePlayerUI();
+
+  checkLevelUp();
+
+  //打贏boss
+
+  if (currentMonster.type === "boss") {
+
+    mapData[player.y][player.x] = 0;
+
+    currentMonster = null;
+
+    showWin();
+
+    return;
+
+  }
 
 
   // 清除地圖怪物
@@ -1670,15 +1814,6 @@ function endBattle() {
   mapData[player.y][player.x] = 0;
 
 
-
-
-  // 獲得經驗
-
-  player.exp += currentMonster.exp;
-
-  player.gold += currentMonster.gold;
-
-  checkLevelUp();
 
   // 10%掉藥水
 
@@ -2046,12 +2181,34 @@ function nextFloor() {
 
   generateMap();
 
-  createMerchant();
+  // 第10層不要商人
+
+  if (currentFloor !== maxFloor) {
+
+    createMerchant();
+
+  }
 
   revealed[player.y][player.x] = true;
 
 
   drawMap();
 
+
+}
+
+//you win
+function showWin() {
+
+  gameState = "clear";
+
+  showMessage(
+    "🏆 恭喜通關 Hero's Quest！"
+  );
+
+  document.getElementById("gameOver").style.display = "flex";
+
+  document.querySelector("#gameOver h1").innerText =
+    "🏆 YOU WIN!";
 
 }

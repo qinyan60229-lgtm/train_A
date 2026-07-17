@@ -370,6 +370,46 @@ li {
 /* BOSS */
 .boss {
 
-    background: #6b00b3;
+    background: #800080;
+
+}
+
+/* fire! */
+
+.lava {
+
+    background: #cc3300;
+
+}
+
+/* ======================
+   👑 Boss血條
+====================== */
+
+.boss-hp {
+
+    height: 25px;
+
+    background:
+        linear-gradient(90deg,
+            #ff0000,
+            #660000);
+
+    box-shadow:
+        0 0 15px red;
+
+}
+
+/* boss名稱變大 */
+.boss-name {
+
+    color: #ff3333;
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+    text-shadow:
+        0 0 10px red;
 
 }
