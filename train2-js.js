@@ -85,7 +85,10 @@ let boss = {
 
   gold: 500,
 
-  turn: 0
+  turn: 0,
+
+  //狂暴狀態
+  enraged: false
 
 };
 
@@ -875,7 +878,10 @@ function bossEncounter() {
   setTimeout(() => {
 
 
-    showBattle(boss);
+    showBattle({
+      ...boss,
+      enraged: false
+    });
 
 
   }, 1500);
@@ -1151,7 +1157,34 @@ function attack() {
 
   }
 
+  // 👑 Boss狂暴判定
 
+  if (
+    currentMonster.type === "boss" &&
+    currentMonster.hp <= currentMonster.maxHp / 2 &&
+    currentMonster.enraged === false
+  ) {
+
+
+    currentMonster.enraged = true;
+
+
+    currentMonster.atk += 20;
+
+
+    addBattleLog(
+      "🔥 深淵魔王進入狂暴狀態！"
+    );
+
+
+    showMessage(
+      "👑 深淵魔王：你竟敢傷到我！"
+      +
+      "\n🔥 魔王力量覺醒！"
+    );
+
+
+  }
 
   addBattleLog(
 
@@ -1255,12 +1288,24 @@ function monsterAttack() {
 
   }
 
-
-
-
   let damage = currentMonster.atk;
 
+  // 👑 Boss狂暴額外傷害
 
+  if (
+    currentMonster.type === "boss" &&
+    currentMonster.enraged
+  ) {
+
+    damage += 10;
+
+
+    addBattleLog(
+      "🔥 狂暴魔王追加火焰傷害！"
+    );
+
+
+  }
 
   // 如果玩家防禦
 
@@ -1279,12 +1324,6 @@ function monsterAttack() {
 
 
   }
-
-
-  // 扣血
-
-  player.hp -= damage;
-
 
   if (player.hp < 0) {
 
@@ -1325,20 +1364,20 @@ function monsterAttack() {
     }
 
   }
+  // 扣血
 
-  updateBattleUI();
+  player.hp -= damage;
 
-
-
+ 
 
   if (player.hp <= 0) {
 
 
     gameOver();
-
+    return;
 
   }
-
+   updateBattleUI();
 
 
 }
@@ -2049,7 +2088,7 @@ function resetGame() {
 
   currentMonster = null;
 
-
+  currentMonster.turn = 0;
 
   gameState = "map";
 
