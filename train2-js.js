@@ -99,7 +99,7 @@ let exitUnlocked = false;
 
 const size = 10;
 
-let currentFloor = 10;
+let currentFloor = 1;
 
 let maxFloor = 10;
 
@@ -136,7 +136,11 @@ let player = {
 
   bossTurn: 0,
   //防禦狀態
-  isDefending: false
+  isDefending: false,
+
+  // 新增
+  hasShield: false,
+  luckyCoin: false
 };
 
 // ======================
@@ -929,46 +933,99 @@ function collectCoin() {
 
 function openChest() {
 
+  let reward = Math.random();
 
-  let reward =
-    Math.random();
-
-
-
-  if (reward < 0.5) {
-
+  // 30%
+  if (reward < 0.30) {
 
     player.gold += 50;
 
+    showMessage(
+      "📦 寶箱開啟！\n💰 Gold +50"
+    );
+
+  }
+
+  // 20%
+  else if (reward < 0.50) {
+
+    player.gold += 150;
 
     showMessage(
-      "📦 打開寶箱！\n獲得 50 金幣"
+      "✨ 黃金寶箱！\n💰 Gold +150"
     );
+
   }
-  else {
+
+  // 15%
+  else if (reward < 0.65) {
 
     if (player.potion < player.maxPotion) {
 
       player.potion++;
 
       showMessage(
-        "📦 獲得治療藥水");
+        "🧪 獲得治療藥水！"
+      );
 
-    }
-
-    else {
+    } else {
 
       showMessage(
-        "📦 找到藥水，但背包已滿");
+        "🧪 找到藥水，但背包已滿！"
+      );
 
     }
 
   }
 
+  // 10%
+  else if (reward < 0.75) {
 
+    player.exp += 30;
+
+    showMessage(
+      "⭐ 獲得30 EXP！"
+    );
+
+    checkLevelUp();
+
+  }
+
+  // 10%
+  else if (reward < 0.85) {
+
+    player.maxHp += 10;
+    player.hp += 10;
+
+    showMessage(
+      "❤️ 最大HP永久 +10"
+    );
+
+  }
+
+  // 10%
+  else if (reward < 0.95) {
+
+    player.atk += 2;
+
+    showMessage(
+      "⚔️ 攻擊永久 +2"
+    );
+
+  }
+
+  // 5%
+  else {
+
+    player.hasShield = true;
+
+    showMessage(
+      "🛡 獲得神聖護符！\n下一場戰鬥第一次傷害減半"
+    );
+
+  }
 
   updatePlayerUI();
-
 
 }
 
@@ -1290,8 +1347,20 @@ function monsterAttack() {
 
   let damage = currentMonster.atk;
 
-  // 👑 Boss狂暴額外傷害
+  // 神聖護符
+  if (player.hasShield) {
 
+    damage = Math.floor(damage / 2);
+
+    player.hasShield = false;
+
+    addBattleLog(
+      "🛡 神聖護符發動！傷害減半！"
+    );
+
+  }
+
+  // 👑 Boss狂暴額外傷害
   if (
     currentMonster.type === "boss" &&
     currentMonster.enraged
@@ -1368,7 +1437,7 @@ function monsterAttack() {
 
   player.hp -= damage;
 
- 
+
 
   if (player.hp <= 0) {
 
@@ -1377,7 +1446,7 @@ function monsterAttack() {
     return;
 
   }
-   updateBattleUI();
+  updateBattleUI();
 
 
 }
@@ -2089,6 +2158,8 @@ function resetGame() {
   currentMonster = null;
 
   currentMonster.turn = 0;
+
+  currentFloor = 1;
 
   gameState = "map";
 
