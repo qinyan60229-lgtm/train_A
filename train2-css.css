@@ -531,36 +531,25 @@ body {
 ===================== */
 
 
-#monsterSprite {
-
+#monsterSprite img{
 
     position: absolute;
 
+    top:180px;
 
-    top:
+    width: 320px;
 
-        180px;
+    right:20%;
 
+    font-size:320px;
 
-    right:
+    height: 160;
 
-        20%;
+    image-rendering: pixelated;
 
+    filter:drop-shadow(0 0 15px red);
 
-    font-size:
-
-        100px;
-
-
-    filter:
-
-        drop-shadow(0 0 15px red);
-
-
-    animation:
-
-        monsterIdle .9s infinite alternate;
-
+    animation:monsterIdle .9s infinite alternate;
 
 }
 
@@ -573,37 +562,25 @@ body {
 
 #playerSprite {
 
-
     position: absolute;
 
+    bottom:180px;
 
-    bottom:
+    left:20%;
 
-        180px;
+    font-size:100px;
 
+    filter:drop-shadow(0 0 10px white);
 
-    left:
-
-        20%;
-
-
-    font-size:
-
-        100px;
-
-
-    filter:
-
-        drop-shadow(0 0 10px white);
-
-
-    animation:
-
-        playerIdle 1.2s infinite alternate;
-
+    animation:playerIdle 1.2s infinite alternate;
 
 }
-
+#playerImage{
+    width:200px;
+    height:200px;
+    image-rendering:pixelated;
+    filter:drop-shadow(0 0 12px white);
+}
 
 
 

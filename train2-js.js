@@ -31,7 +31,8 @@ let monsters = [
     rarity: "normal",
 
     minFloor: 1,
-    maxFloor: 3
+    maxFloor: 3,
+    image: "img/slime.png"
   },
 
 
@@ -46,7 +47,8 @@ let monsters = [
     rarity: "normal",
 
     minFloor: 4,
-    maxFloor: 6
+    maxFloor: 6,
+    image: "img/greenmeat.png"
   },
 
 
@@ -61,7 +63,8 @@ let monsters = [
     rarity: "normal",
 
     minFloor: 7,
-    maxFloor: 9
+    maxFloor: 9,
+    image: "img/bone.png"
   }
 
 ];
@@ -88,7 +91,8 @@ let boss = {
   turn: 0,
 
   //狂暴狀態
-  enraged: false
+  enraged: false,
+  image: "img/boss.png"
 
 };
 
@@ -99,7 +103,7 @@ let exitUnlocked = false;
 
 const size = 10;
 
-let currentFloor = 1;
+let currentFloor = 10;
 
 let maxFloor = 10;
 
@@ -140,7 +144,8 @@ let player = {
 
   // 新增
   hasShield: false,
-  luckyCoin: false
+  luckyCoin: false,
+  image: "img/he.png"
 };
 
 // ======================
@@ -200,6 +205,8 @@ function createMonster() {
     exp: monster.exp,
 
     gold: monster.gold,
+
+    image: monster.image,
 
     rarity: "普通"
 
@@ -1672,7 +1679,7 @@ function updateBattleUI() {
   else {
 
     monsterName.innerText =
-    currentMonster.name;
+      currentMonster.name;
     monsterName.classList.remove("boss-name");
 
   }
@@ -1732,12 +1739,21 @@ function updateBattleUI() {
 
   }
 
-  document
-    .getElementById("monsterSprite")
-    .innerHTML =
-    currentMonster.type === "boss"
-      ? "👑"
-      : "👾";
+  let monsterImg =
+    document.getElementById("monsterImg");
+
+  if (currentMonster.type === "boss") {
+
+    monsterImg.src =
+      "img/boss.png";
+
+  }
+  else {
+
+    monsterImg.src =
+      currentMonster.image;
+
+  }
 
 
   // 玩家 HP
@@ -1773,7 +1789,7 @@ function updateBattleUI() {
       "HP：" + player.hp + " / " + player.maxHp;
   }
 
-
+  document.getElementById("playerImage").src = player.image;
 
 }
 
