@@ -2140,6 +2140,94 @@ function showPickup(icon, text) {
 
 }
 
+// 戰鬥系列特效
+// 戰鬥開始
+function playBattleStart() {
+
+  let panel =
+    document.getElementById("battlePanel");
+
+  panel.classList.add("battle-enter");
+
+
+  setTimeout(() => {
+
+    panel.classList.remove("battle-enter");
+
+  }, 1000);
+
+}
+// 玩家攻擊
+function playPlayerAttack() {
+
+  let player =
+    document.getElementById("playerSprite");
+
+
+  if (!player) return;
+
+
+  player.classList.add("attackMove");
+
+
+  setTimeout(() => {
+
+    player.classList.remove("attackMove");
+
+  }, 300);
+
+}
+// 怪物受傷
+function playMonsterHit() {
+
+  let monster =
+    document.getElementById("monsterSprite");
+
+
+  if (!monster) return;
+
+
+  monster.classList.add("damageShake");
+
+
+  setTimeout(() => {
+
+    monster.classList.remove("damageShake");
+
+  }, 300);
+
+}
+// 傷害數字
+function showDamageNumber(number) {
+
+
+  let damage =
+    document.createElement("div");
+
+
+  damage.className = "damageNumber";
+
+
+  damage.innerText = "-" + number;
+
+
+  let layer =
+    document.getElementById(
+      "battleEffectLayer"
+    );
+
+
+  layer.appendChild(damage);
+
+
+  setTimeout(() => {
+
+    damage.remove();
+
+  }, 1000);
+
+
+}
 
 
 // ======================
