@@ -76,10 +76,94 @@
             <div class="col-md-6">
                 <div class="panel">
                     <div id="mapContainer">
-                        <h3 id="floorTitle">🗺️ 第一層</h3>
 
-                        <div id="map"></div>
-                        <div id="effectLayer"></div>
+
+                        <h3 id="floorTitle">
+                            🗺️ 第一層
+                        </h3>
+                        <div id="mapArea">
+
+                            <div id="map"></div>
+
+                            <div id="effectLayer"></div>
+
+                        </div>
+
+                        <div id="battleScene">
+
+
+                            <div id="battleInfo">
+
+                                <h3 id="monsterName">
+                                    沒有敵人
+                                </h3>
+
+
+                                <div class="status-bar monster-bar">
+                                    <div id="monsterHPBar"></div>
+                                </div>
+
+
+                                <p id="monsterHp">
+                                    HP：--
+                                </p>
+
+                            </div>
+
+
+
+                            <div id="monsterSprite">
+                                👾
+                            </div>
+
+
+
+                            <div id="playerSprite">
+                                😀
+                            </div>
+
+
+
+                            <div id="battleEffectLayer"></div>
+
+
+
+                            <div id="battleLog">
+                                等待戰鬥...
+                            </div>
+
+
+
+                            <div id="battleUI">
+
+                                <button onclick="attack()" class="btn btn-danger">
+                                    ⚔️ 攻擊
+                                </button>
+
+
+                                <button class="btn btn-primary">
+                                    ✨ 技能
+                                </button>
+
+
+                                <button onclick="defend()" class="btn btn-secondary">
+                                    🛡 防禦
+                                </button>
+
+
+                                <button class="btn btn-success">
+                                    🎒 背包
+                                </button>
+
+
+                                <button onclick="runAway()" class="btn btn-warning">
+                                    🏃逃跑
+                                </button>
+
+                            </div>
+
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -115,69 +199,7 @@
         </div>
 
 
-        <!-- 戰鬥區 -->
 
-        <div class="row">
-
-            <div class="col-12">
-
-                <div id="battlePanel" class="panel">
-
-                    <h3>⚔️ 戰鬥資訊</h3>
-
-                    <hr>
-
-                    <h4 id="monsterName">
-                        沒有敵人
-                    </h4>
-
-
-                    <div class="status-bar monster-bar">
-                        <div id="monsterHPBar"></div>
-                    </div>
-
-
-                    <p id="monsterHp">
-                        HP：--
-                    </p>
-
-
-                    <hr>
-
-
-                    <button id="attackBtn" onclick="attack()" class="btn btn-danger">
-                        ⚔️ 攻擊
-                    </button>
-
-                    <button class="btn btn-primary">
-                        ✨ 技能
-                    </button>
-
-                    <button onclick="defend()" class="btn btn-secondary">
-                        🛡 防禦
-                    </button>
-
-                    <button class="btn btn-success">
-                        🎒 背包
-                    </button>
-
-                    <button onclick="runAway()" class="btn btn-warning">
-                        🏃逃跑
-                    </button>
-
-
-                    <hr>
-
-
-                    <div id="battleLog">
-                        等待戰鬥...
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
 
     </main>
 
@@ -230,22 +252,6 @@
         <button onclick="resetGame()">
             重新開始
         </button>
-
-    </div>
-    <!-- 戰鬥專用 -->
-    <div id="battleScene">
-
-        <div id="monsterSprite">
-            👾
-        </div>
-
-
-        <div id="battleEffectLayer"></div>
-
-
-        <div id="playerSprite">
-            🧙
-        </div>
 
     </div>
 

@@ -2,15 +2,30 @@
    基本設定
 ===================== */
 
+* {
+    box-sizing: border-box;
+}
+
+
 body {
+
     font-family:
         "Microsoft JhengHei",
         sans-serif;
-    background: url(../月薪喵.gif);
+
+    background:
+        url(../月薪喵.gif);
+
     background-size: auto;
+
     background-attachment: fixed;
+
     color: white;
+
     text-align: center;
+
+    overflow-x: hidden;
+
 }
 
 
@@ -18,569 +33,853 @@ body {
    遊戲標題
 ===================== */
 
+
 .game-title {
+
     font-size: 42px;
+
     font-weight: bold;
+
     padding: 20px;
+
     color: #ffd700;
-    text-shadow: 3px 3px 8px black;
+
+    text-shadow:
+        3px 3px 8px black;
+
 }
 
 
+
 /* =====================
-   遊戲主要區域
+   主畫面
 ===================== */
+
 
 .game-area {
+
     margin-top: 20px;
+
 }
+
 
 
 /* =====================
-   RPG 面板
+   通用面板
 ===================== */
 
+
 .panel {
-    background: rgba(10, 10, 10, 0.88);
-    border: 3px solid #c9a227;
-    border-radius: 15px;
-    padding: 20px;
-    min-height: 300px;
-    box-shadow: 0 0 20px black;
+
+    background:
+        rgba(10, 10, 10, .88);
+
+
+    border:
+
+        3px solid #c9a227;
+
+
+    border-radius:
+
+        15px;
+
+
+    padding:
+
+        20px;
+
+
+    min-height:
+
+        650px;
+
+
+    box-shadow:
+
+        0 0 20px black;
+
 }
+
 
 
 .panel h3 {
+
     color: #ffd700;
-}
 
-
-.panel h4 {
-    color: #ffffff;
 }
 
 
 /* =====================
-   玩家資訊
+   地圖區
 ===================== */
 
-.player-panel {
-    min-height: 650px;
+
+#mapContainer {
+
+    position: relative;
+
+    width: 100%;
+
+    height: 650px;
 }
 
+/* 包住跟effectLayer */
+#mapArea {
 
+    position: relative;
 
-/* =====================
-   地圖區域
-===================== */
-
-.map-panel {
-    min-height: 650px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
 }
+
+/* 地圖 */
 
 
 #map {
+
+    position: absolute;
+
+    top: 60px;
+
+    left: 0;
+
+    width: 100%;
+
     display: grid;
-    grid-template-columns: repeat(10, 55px);
+
+    grid-template-columns:
+        repeat(10, 55px);
+
+
     justify-content: center;
+
+
     margin-top: 20px;
+
+
     padding: 20px;
+
 }
+
+
 
 
 .cell {
+
     width: 55px;
+
     height: 55px;
+
     background: #222;
+
     border: 1px solid #555;
+
     display: flex;
+
     justify-content: center;
+
     align-items: center;
+
     font-size: 26px;
+
 }
+
+
+
 
 .safe-zone {
 
+
     background:
+
         radial-gradient(circle,
             #3b6d2a,
             #182614);
 
+
     box-shadow:
+
         inset 0 0 15px #8aff70;
 
 }
 
 
+
+
 .wall {
+
     background: #777;
+
 }
+
 
 
 .player {
-    background: lightskyblue;
+
+    background:
+        lightskyblue;
+
 }
+
 
 
 .coin {
-    background: gold;
+
+    background:
+        gold;
+
 }
+
 
 
 .monster {
-    background: crimson;
-    animation: monsterGlow 1s infinite alternate;
+
+    background:
+        crimson;
+
+
+    animation:
+
+        monsterGlow 1s infinite alternate;
+
 }
+
+
 
 @keyframes monsterGlow {
 
+
     from {
-        box-shadow: 0 0 5px red;
+
+        box-shadow:
+            0 0 5px red;
+
     }
 
+
     to {
-        box-shadow: 0 0 20px red;
+
+        box-shadow:
+            0 0 20px red;
+
     }
 
 }
 
 
+
+
 /* =====================
-   HP / EXP 血條
+   HP / EXP
 ===================== */
 
 
 .status-bar {
-    width: 90%;
-    height: 25px;
-    margin: 10px auto;
-    background: #333;
-    border: 2px solid white;
-    border-radius: 15px;
+
+
+    width:
+
+        90%;
+
+
+    height:
+
+        25px;
+
+
+    margin:
+
+        10px auto;
+
+
+    background:
+
+        #333;
+
+
+    border:
+
+        2px solid white;
+
+
+    border-radius:
+
+        15px;
+
+
     overflow: hidden;
+
+
 }
+
 
 
 #playerHPBar {
-    width: 100%;
-    height: 100%;
-    background: green;
 
-    transition: width 0.4s ease;
+
+    width:
+
+        100%;
+
+
+    height:
+
+        100%;
+
+
+    background:
+
+        green;
+
+
+    transition:
+
+        width .4s ease;
+
 }
+
+
 
 
 #expBar {
-    width: 0%;
-    height: 100%;
-    background: purple;
 
-    transition: width 0.5s ease;
-    /* width：只有寬度會有動畫。
-    0.5s：動畫時間 0.5 秒。
-    ease：先快後慢，比較自然。 */
+
+    width:
+
+        0%;
+
+
+    height:
+
+        100%;
+
+
+    background:
+
+        purple;
+
+
+    transition:
+
+        width .5s ease;
+
 }
+
 
 
 .exp-bar {
-    height: 20px;
-}
 
 
-.monster-bar {
-    width: 300px;
+    height:
+
+        20px;
+
 }
+
 
 
 #monsterHPBar {
-    width: 0%;
-    height: 100%;
-    background: red;
 
-    transition: width 0.4s ease;
-}
 
+    width:
 
+        0%;
 
-/* =====================
-   戰鬥區
-===================== */
 
+    height:
 
-#battlePanel {
-    margin-top: 20px;
-    background: rgba(0, 0, 0, 0.9);
-    border-color: white;
-}
+        100%;
 
-
-#battleLog {
-    height: 120px;
-    background: #111;
-    color: white;
-    border: 2px solid #555;
-    border-radius: 10px;
-    padding: 15px;
-    text-align: left;
-    overflow: auto;
-}
-
-
-
-/* =====================
-   按鈕
-===================== */
-
-
-button {
-    margin: 5px;
-    font-weight: bold;
-}
-
-
-
-/* =====================
-   背包
-===================== */
-
-
-.inventory,
-ul {
-    list-style: none;
-    padding: 0;
-}
-
-
-li {
-    margin: 8px;
-}
-
-
-
-/* =====================
-   訊息提示
-===================== */
-
-
-#messageBox {
-    display: none;
-    position: fixed;
-    bottom: 50px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 400px;
-    min-height: 60px;
-    background: #111;
-    color: white;
-    border: 3px solid #ffd700;
-    border-radius: 15px;
-    padding: 20px;
-    font-size: 22px;
-    z-index: 999;
-}
-
-
-
-/* =====================
-   GAME OVER
-===================== */
-
-
-#gameOver {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    color: white;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    z-index: 1000;
-}
-
-/* =====================
-   出口
-===================== */
-.exit {
-    background: #6a0dad;
-    color: white;
-    font-size: 28px;
-    animation: exitGlow 1s infinite alternate;
-}
-
-@keyframes exitGlow {
-
-    from {
-        box-shadow: 0 0 5px #b266ff;
-    }
-
-    to {
-        box-shadow: 0 0 18px #d9a3ff;
-    }
-
-}
-
-/* 寶箱外觀 */
-.chest {
-
-    background: #8b4513;
-
-    border: 2px solid gold;
-
-}
-
-/* 商人外觀 */
-.merchant {
-
-    background: #663399;
-
-    border: 2px solid gold;
-
-}
-
-/* 商店 */
-#shop {
-
-    display: none;
-
-    position: fixed;
-
-    top: 50%;
-
-    left: 50%;
-
-    transform: translate(-50%, -50%);
-
-    background: #111;
-
-    border: 3px solid gold;
-
-    padding: 30px;
-
-    border-radius: 15px;
-
-    z-index: 999;
-
-}
-
-/* BOSS */
-.boss {
-
-    background: #800080;
-
-}
-
-/* fire! */
-
-.lava {
-
-    background: #cc3300;
-
-}
-
-/* ======================
-   👑 Boss血條
-====================== */
-
-.boss-hp {
-
-    height: 25px;
 
     background:
-        linear-gradient(90deg,
-            #ff0000,
-            #660000);
 
-    box-shadow:
-        0 0 15px red;
+        red;
 
-}
 
-/* boss名稱變大 */
-.boss-name {
+    transition:
 
-    color: #ff3333;
-
-    font-size: 28px;
-
-    font-weight: bold;
-
-    text-shadow:
-        0 0 10px red;
+        width .4s ease;
 
 }
 
-/* 地圖容器 */
-#mapContainer {
-    position: relative;
-    display: inline-block;
-}
 
-/* 效果層 */
-#effectLayer {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-}
 
-/* 動畫物件 */
-.pickup {
+.monster-bar {
 
-    position: absolute;
 
-    font-size: 28px;
+    width:
 
-    font-weight: bold;
-
-    white-space: nowrap;
-
-    transform: translate(-50%, -50%);
-
-    animation: pickupAnim .9s forwards;
+        300px;
 
 }
 
-/* 動畫 */
-@keyframes pickupAnim {
+/* =====================
+   ⚔️ Battle Scene
+   方案 B 戰鬥畫面
+===================== */
 
-    0% {
 
-        transform:
-            translate(-50%, -50%) scale(.4);
-
-        opacity: 0;
-
-    }
-
-    20% {
-
-        transform:
-            translate(-50%, -50%) scale(1.4);
-
-        opacity: 1;
-
-    }
-
-    40% {
-
-        transform:
-            translate(-50%, -50%) scale(1);
-
-    }
-
-    100% {
-
-        transform:
-            translate(-50%, -90px) scale(1);
-
-        opacity: 0;
-
-    }
-
-}
-
-/* 戰鬥專用場景 */
 #battleScene {
 
-    height: 300px;
+    width: 100%;
 
-    position: relative;
+    height: 650px;
 
+    display: none;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    z-index: 30;
     overflow: hidden;
 
+
+    border-radius:
+
+        15px;
+
+
+    border:
+
+        3px solid #c9a227;
+
+
     background:
-        linear-gradient(#182848,
-            #4b6cb7);
 
-    border-radius: 15px;
+        linear-gradient(to bottom,
+            #16222a,
+            #3a6073);
 
-}
 
-/* 戰鬥背景流動 */
-#battleScene {
+    background-size:
 
-    background-size: 200% 200%;
+        200% 200%;
+
 
     animation:
+
         battleBackground 8s infinite alternate;
 
 }
 
+#battleScene>* {
+
+    box-sizing: border-box;
+
+}
+
+/* 補檔 */
+#battleInfo {
+
+    position: absolute;
+
+    top: 70px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    text-align: center;
+
+    z-index: 20;
+
+}
+
+#floorTitle {
+
+    position: absolute;
+
+    top: 0;
+
+    left: 0;
+
+    width: 100%;
+
+    z-index: 40;
+
+}
+
+/* 戰鬥背景動畫 */
 
 @keyframes battleBackground {
 
+
     from {
 
-        background-position: 0%;
+        background-position:
+
+            0% 50%;
 
     }
 
 
     to {
 
-        background-position: 100%;
+        background-position:
+
+            100% 50%;
 
     }
 
-}
-
-/* 角色待機 */
-#playerSprite {
-
-    position: absolute;
-
-    bottom: 20px;
-
-    left: 25%;
-
-    font-size: 80px;
-
-    animation:
-        playerIdle 1s infinite alternate;
 
 }
 
-@keyframes playerIdle {
-
-    from {
-        transform: translateY(0);
-    }
 
 
-    to {
-        transform: translateY(-15px);
-    }
+/* =====================
+   怪物位置
+===================== */
 
-}
 
 #monsterSprite {
 
+
     position: absolute;
 
-    bottom: 80px;
 
-    right: 25%;
+    top:
 
-    font-size: 80px;
+        180px;
+
+
+    right:
+
+        20%;
+
+
+    font-size:
+
+        100px;
+
+
+    filter:
+
+        drop-shadow(0 0 15px red);
+
 
     animation:
-        monsterIdle .8s infinite alternate;
+
+        monsterIdle .9s infinite alternate;
+
 
 }
 
-/* 攻擊 */
-.attackMove {
+
+
+/* =====================
+   玩家位置
+===================== */
+
+
+#playerSprite {
+
+
+    position: absolute;
+
+
+    bottom:
+
+        180px;
+
+
+    left:
+
+        20%;
+
+
+    font-size:
+
+        100px;
+
+
+    filter:
+
+        drop-shadow(0 0 10px white);
+
 
     animation:
+
+        playerIdle 1.2s infinite alternate;
+
+
+}
+
+
+
+
+
+/* 玩家待機 */
+
+
+@keyframes playerIdle {
+
+
+    from {
+
+        transform:
+
+            translateY(0);
+
+    }
+
+
+    to {
+
+        transform:
+
+            translateY(-15px);
+
+    }
+
+
+}
+
+
+
+
+/* 怪物待機 */
+
+
+@keyframes monsterIdle {
+
+
+    from {
+
+        transform:
+
+            translateY(0);
+
+    }
+
+
+    to {
+
+        transform:
+
+            translateY(-12px);
+
+    }
+
+
+}
+
+
+
+
+
+/* =====================
+   戰鬥資訊
+===================== */
+
+
+/*
+   這裡取代原本 battlePanel
+*/
+
+
+#battleInfo {
+
+
+    position: absolute;
+
+
+    top:
+
+        20px;
+
+
+    left:
+
+        50%;
+
+
+    transform:
+
+        translateX(-50%);
+
+
+    width:
+
+        80%;
+
+
+}
+
+
+
+#monsterName {
+
+
+    font-size:
+
+        32px;
+
+
+    font-weight:
+
+        bold;
+
+
+    color:
+
+        white;
+
+
+    text-shadow:
+
+        0 0 10px black;
+
+
+}
+
+
+
+#monsterHp {
+
+
+    font-size:
+
+        22px;
+
+}
+
+
+
+
+/* =====================
+   戰鬥紀錄
+===================== */
+
+
+#battleLog {
+
+
+    position: absolute;
+
+
+    bottom:
+
+        110px;
+
+
+    left:
+
+        50%;
+
+
+    transform:
+
+        translateX(-50%);
+
+
+    width:
+
+        85%;
+
+
+    height:
+
+        70px;
+
+
+    overflow: auto;
+
+
+    padding:
+
+        10px;
+
+
+
+    background:
+
+        rgba(0,
+            0,
+            0,
+            .65);
+
+
+    border:
+
+        2px solid #777;
+
+
+    border-radius:
+
+        12px;
+
+
+    text-align: left;
+
+
+}
+
+
+
+
+/* =====================
+   戰鬥按鈕
+===================== */
+
+
+#battleUI {
+
+
+    position: absolute;
+
+
+    bottom:
+
+        20px;
+
+
+    left:
+
+        50%;
+
+
+    transform:
+
+        translateX(-50%);
+
+
+    width:
+
+        90%;
+
+
+}
+
+
+
+
+#battleUI button {
+
+
+    min-width:
+
+        90px;
+
+
+    font-weight:
+
+        bold;
+
+
+}
+
+
+
+/* =====================
+   攻擊動畫
+===================== */
+
+
+.attackMove {
+
+
+    animation:
+
         attackMove .3s;
 
 }
@@ -592,18 +891,30 @@ li {
 
     50% {
 
+
         transform:
+
             translateX(80px);
+
 
     }
 
 
 }
 
-/* 受傷震動 */
+
+
+
+/* =====================
+   受傷動畫
+===================== */
+
+
 .damageShake {
 
+
     animation:
+
         shake .3s;
 
 }
@@ -612,38 +923,674 @@ li {
 
 @keyframes shake {
 
+
     25% {
-        transform: translateX(-10px);
+
+        transform:
+
+            translateX(-10px);
+
     }
 
 
     50% {
-        transform: translateX(10px);
+
+        transform:
+
+            translateX(10px);
+
     }
 
 
     75% {
-        transform: translateX(-10px);
+
+        transform:
+
+            translateX(-10px);
+
     }
 
 
 }
 
-/* 傷害數字 */
-.damageNumber {
+/* =====================
+   按鈕
+===================== */
+
+
+button {
+
+    margin:
+
+        5px;
+
+
+    font-weight:
+
+        bold;
+
+}
+
+
+
+/* =====================
+   背包
+===================== */
+
+
+.inventory,
+ul {
+
+
+    list-style: none;
+
+
+    padding: 0;
+
+
+}
+
+
+li {
+
+    margin:
+
+        8px;
+
+}
+
+
+
+/* =====================
+   訊息提示
+===================== */
+
+
+#messageBox {
+
+
+    display: none;
+
+
+    position: fixed;
+
+
+    bottom:
+
+        50px;
+
+
+    left:
+
+        50%;
+
+
+    transform:
+
+        translateX(-50%);
+
+
+
+    width:
+
+        400px;
+
+
+    min-height:
+
+        60px;
+
+
+
+    background:
+
+        #111;
+
+
+
+    color:
+
+        white;
+
+
+
+    border:
+
+        3px solid #ffd700;
+
+
+
+    border-radius:
+
+        15px;
+
+
+
+    padding:
+
+        20px;
+
+
+
+    font-size:
+
+        22px;
+
+
+
+    z-index:
+
+        999;
+
+}
+
+
+
+/* =====================
+   GAME OVER
+===================== */
+
+
+#gameOver {
+
+
+    display: none;
+
+
+    position: fixed;
+
+
+
+    top:
+
+        0;
+
+
+    left:
+
+        0;
+
+
+
+    width:
+
+        100%;
+
+
+    height:
+
+        100%;
+
+
+
+    background:
+
+        rgba(0,
+            0,
+            0,
+            .9);
+
+
+
+    color:
+
+        white;
+
+
+
+    justify-content:
+
+        center;
+
+
+
+    align-items:
+
+        center;
+
+
+
+    flex-direction:
+
+        column;
+
+
+
+    z-index:
+
+        1000;
+
+
+}
+
+
+
+/* =====================
+   地圖物件
+===================== */
+
+
+.exit {
+
+
+    background:
+
+        #6a0dad;
+
+
+    color:
+
+        white;
+
+
+    font-size:
+
+        28px;
+
+
+
+    animation:
+
+        exitGlow 1s infinite alternate;
+
+}
+
+
+
+@keyframes exitGlow {
+
+
+    from {
+
+        box-shadow:
+
+            0 0 5px #b266ff;
+
+    }
+
+
+    to {
+
+        box-shadow:
+
+            0 0 18px #d9a3ff;
+
+    }
+
+
+}
+
+
+
+
+.chest {
+
+
+    background:
+
+        #8b4513;
+
+
+    border:
+
+        2px solid gold;
+
+}
+
+
+
+.merchant {
+
+
+    background:
+
+        #663399;
+
+
+    border:
+
+        2px solid gold;
+
+}
+
+
+
+
+/* =====================
+   商店
+===================== */
+
+
+#shop {
+
+
+    display: none;
+
+
+    position: fixed;
+
+
+
+    top:
+
+        50%;
+
+
+
+    left:
+
+        50%;
+
+
+
+    transform:
+
+        translate(-50%,
+            -50%);
+
+
+
+    background:
+
+        #111;
+
+
+
+    border:
+
+        3px solid gold;
+
+
+
+    padding:
+
+        30px;
+
+
+
+    border-radius:
+
+        15px;
+
+
+
+    z-index:
+
+        999;
+
+}
+
+
+
+
+
+/* =====================
+   BOSS
+===================== */
+
+
+.boss {
+
+
+    background:
+
+        #800080;
+
+
+}
+
+
+
+.lava {
+
+
+    background:
+
+        #cc3300;
+
+
+}
+
+
+
+.boss-hp {
+
+
+    height:
+
+        25px;
+
+
+    background:
+
+        linear-gradient(90deg,
+            red,
+            #660000);
+
+
+    box-shadow:
+
+        0 0 15px red;
+
+
+}
+
+
+
+.boss-name {
+
+
+    color:
+
+        #ff3333;
+
+
+
+    font-size:
+
+        28px;
+
+
+
+    font-weight:
+
+        bold;
+
+
+
+    text-shadow:
+
+        0 0 10px red;
+
+
+}
+
+
+
+
+
+/* =====================
+   撿取效果
+===================== */
+
+
+#effectLayer {
 
     position: absolute;
 
-    font-size: 40px;
+    left: 0;
+    top: 60px;
 
-    color: red;
+    width: 100%;
+    height: 550px;
+
+    z-index: 20;
+
+    pointer-events: none;
+
+
+}
+
+/* 戰鬥特效 */
+#battleEffectLayer {
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    pointer-events: none;
+
+    z-index: 50;
+
+}
+
+/* 撿取物品文字 */
+.pickup {
+
+
+    position: absolute;
+
+    font-size: 28px;
 
     font-weight: bold;
 
+    color: #ffd700;
+
+    text-shadow:
+        0 0 8px black;
+
+    white-space: nowrap;
+
+    transform: translate(-50%, -50%);
+
     animation:
-        damageFloat 1s forwards;
+        pickupAnim .9s forwards;
 
 }
+
+
+
+
+@keyframes pickupAnim {
+
+
+    0% {
+
+
+        transform:
+
+            translate(-50%,
+                -50%) scale(.4);
+
+
+
+        opacity:
+
+            0;
+
+
+    }
+
+
+    20% {
+
+
+        transform:
+
+            translate(-50%,
+                -50%) scale(1.4);
+
+
+
+        opacity:
+
+            1;
+
+
+    }
+
+
+
+    40% {
+
+
+        transform:
+
+            translate(-50%,
+                -50%) scale(1);
+
+
+    }
+
+
+
+
+    100% {
+
+
+        transform:
+
+            translate(-50%,
+                -90px) scale(1);
+
+
+
+        opacity:
+
+            0;
+
+
+    }
+
+
+
+}
+
+
+
+
+/* =====================
+   傷害數字
+===================== */
+
+
+.damageNumber {
+
+
+    position: absolute;
+
+
+
+    font-size:
+
+        40px;
+
+
+
+    color:
+
+        red;
+
+
+
+    font-weight:
+
+        bold;
+
+
+
+    animation:
+
+        damageFloat 1s forwards;
+
+
+}
+
+
 
 
 @keyframes damageFloat {
@@ -651,21 +1598,238 @@ li {
 
     from {
 
+
         transform:
+
             translateY(0);
 
-        opacity: 1;
+
+
+        opacity:
+
+            1;
+
+
+    }
+
+
+
+    to {
+
+
+        transform:
+
+            translateY(-80px);
+
+
+
+        opacity:
+
+            0;
+
+
+    }
+
+
+}
+
+/* =====================
+   地圖特殊物件
+===================== */
+
+
+/* 金幣 */
+
+.coin {
+
+    background:
+
+        radial-gradient(circle,
+            #fff176,
+            gold);
+
+
+    animation:
+
+        coinGlow 1s infinite alternate;
+
+
+}
+
+
+@keyframes coinGlow {
+
+
+    from {
+
+        box-shadow:
+
+            0 0 5px gold;
 
     }
 
 
     to {
 
-        transform:
-            translateY(-80px);
+        box-shadow:
 
-        opacity: 0;
+            0 0 20px yellow;
 
     }
+
+
+}
+
+
+
+/* 怪物 */
+
+.monster {
+
+
+    background:
+
+        crimson;
+
+
+    animation:
+
+        monsterGlow 1s infinite alternate;
+
+
+}
+
+
+
+@keyframes monsterGlow {
+
+
+    from {
+
+        box-shadow:
+
+            0 0 5px red;
+
+    }
+
+
+    to {
+
+        box-shadow:
+
+            0 0 20px red;
+
+    }
+
+
+}
+
+
+
+
+/* 寶箱 */
+
+.chest {
+
+
+    background:
+
+        linear-gradient(135deg,
+            #8b4513,
+            #d2691e);
+
+
+    border:
+
+        2px solid gold;
+
+
+    box-shadow:
+
+        0 0 10px orange;
+
+
+}
+
+
+
+/* 商人 */
+
+.merchant {
+
+
+    background:
+
+        #663399;
+
+
+    border:
+
+        2px solid gold;
+
+
+}
+
+
+
+/* Boss */
+
+.boss {
+
+
+    background:
+
+        #800080;
+
+
+    box-shadow:
+
+        0 0 20px purple;
+
+
+}
+
+
+
+/* 火焰 */
+
+.lava {
+
+
+    background:
+
+        #cc3300;
+
+
+    animation:
+
+        fireGlow .8s infinite alternate;
+
+
+}
+
+
+@keyframes fireGlow {
+
+
+    from {
+
+        box-shadow:
+
+            0 0 5px orange;
+
+
+    }
+
+
+    to {
+
+        box-shadow:
+
+            0 0 20px red;
+
+
+    }
+
 
 }

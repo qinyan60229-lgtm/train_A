@@ -1144,11 +1144,9 @@ function checkExploreComplete() {
 // ⚔️ 開始戰鬥
 // ======================
 
-
 function showBattle(monster = null) {
 
   gameState = "battle";
-
 
   if (monster) {
 
@@ -1161,29 +1159,25 @@ function showBattle(monster = null) {
 
   }
 
-  document
-    .getElementById("battlePanel")
-    .style.display = "block";
-
-
+  // 隱藏地圖
 
   document
     .getElementById("map")
     .style.display = "none";
 
+  // 顯示戰鬥場景
 
+  document
+    .getElementById("battleScene")
+    .style.display = "block";
 
   document
     .getElementById("battleLog")
     .innerHTML = "";
 
-
-
   addBattleLog(
     "⚔️ 遭遇 " + currentMonster.name + "！"
   );
-
-
 
   updateBattleUI();
 
@@ -1527,7 +1521,7 @@ function runAway() {
 
 
     document
-      .getElementById("battlePanel")
+      .getElementById("battleScene")
       .style.display = "none";
 
 
@@ -1678,7 +1672,7 @@ function updateBattleUI() {
   else {
 
     monsterName.innerText =
-      "👾 " + currentMonster.name;
+    currentMonster.name;
     monsterName.classList.remove("boss-name");
 
   }
@@ -1690,25 +1684,11 @@ function updateBattleUI() {
 
     if (currentMonster.type === "boss") {
 
-
       monsterHp.innerText =
         "🔥 魔王生命：" + currentMonster.hp + " / " + currentMonster.maxHp;
-
-
     }
     else {
-
-
-      monsterHp.innerText =
-        "HP："
-        +
-        currentMonster.hp
-        +
-        " / "
-        +
-        currentMonster.maxHp;
-
-
+      monsterHp.innerText = "HP：" + currentMonster.hp + " / " + currentMonster.maxHp;
     }
 
 
@@ -1752,7 +1732,12 @@ function updateBattleUI() {
 
   }
 
-
+  document
+    .getElementById("monsterSprite")
+    .innerHTML =
+    currentMonster.type === "boss"
+      ? "👑"
+      : "👾";
 
 
   // 玩家 HP
@@ -1784,16 +1769,8 @@ function updateBattleUI() {
 
 
   if (playerHp) {
-
     playerHp.innerText =
-      "HP："
-      +
-      player.hp
-      +
-      " / "
-      +
-      player.maxHp;
-
+      "HP：" + player.hp + " / " + player.maxHp;
   }
 
 
@@ -1984,8 +1961,8 @@ function endBattle() {
 
 
   document
-    .getElementById("battlePanel")
-    .style.display = "block";
+    .getElementById("battleScene")
+    .style.display = "none";
 
 
 
@@ -2124,7 +2101,7 @@ function showPickup(icon, text) {
 
   layer.appendChild(effect);
 
-  const cellSize = 50;
+  const cellSize = 55;
 
   effect.style.left =
     player.x * cellSize + cellSize / 2 + "px";
@@ -2145,7 +2122,7 @@ function showPickup(icon, text) {
 function playBattleStart() {
 
   let panel =
-    document.getElementById("battlePanel");
+    document.getElementById("battleScene");
 
   panel.classList.add("battle-enter");
 
@@ -2310,8 +2287,6 @@ function resetGame() {
 
   currentMonster = null;
 
-  currentMonster.turn = 0;
-
   currentFloor = 1;
 
   gameState = "map";
@@ -2339,8 +2314,8 @@ function resetGame() {
 
 
   document
-    .getElementById("battlePanel")
-    .style.display = "block";
+    .getElementById("battleScene")
+    .style.display = "none";
 
 
 
