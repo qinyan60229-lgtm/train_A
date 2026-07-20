@@ -413,3 +413,75 @@ li {
         0 0 10px red;
 
 }
+
+/* 地圖容器 */
+#mapContainer {
+    position: relative;
+    display: inline-block;
+}
+
+/* 效果層 */
+#effectLayer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* 動畫物件 */
+.pickup {
+
+    position: absolute;
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+    white-space: nowrap;
+
+    transform: translate(-50%, -50%);
+
+    animation: pickupAnim .9s forwards;
+
+}
+
+/* 動畫 */
+@keyframes pickupAnim {
+
+    0% {
+
+        transform:
+            translate(-50%, -50%) scale(.4);
+
+        opacity: 0;
+
+    }
+
+    20% {
+
+        transform:
+            translate(-50%, -50%) scale(1.4);
+
+        opacity: 1;
+
+    }
+
+    40% {
+
+        transform:
+            translate(-50%, -50%) scale(1);
+
+    }
+
+    100% {
+
+        transform:
+            translate(-50%, -90px) scale(1);
+
+        opacity: 0;
+
+    }
+
+}

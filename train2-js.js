@@ -684,6 +684,7 @@ function initGame() {
 
   updatePlayerUI();
 
+  updateFloorTitle();
 
   showMessage(
     "🎮 勇者開始冒險！"
@@ -909,6 +910,7 @@ function collectCoin() {
 
     player.gold += 10;
 
+    showPickup("💰", "+10 Gold");
 
     mapData[player.y][player.x] = 0;
 
@@ -940,6 +942,8 @@ function openChest() {
 
     player.gold += 50;
 
+    showPickup("📦", "+50 Gold");
+
     showMessage(
       "📦 寶箱開啟！\n💰 Gold +50"
     );
@@ -950,6 +954,8 @@ function openChest() {
   else if (reward < 0.50) {
 
     player.gold += 150;
+
+    showPickup("✨", "+150 Gold");
 
     showMessage(
       "✨ 黃金寶箱！\n💰 Gold +150"
@@ -963,6 +969,8 @@ function openChest() {
     if (player.potion < player.maxPotion) {
 
       player.potion++;
+
+      showPickup("🧪", "治療藥水");
 
       showMessage(
         "🧪 獲得治療藥水！"
@@ -983,6 +991,8 @@ function openChest() {
 
     player.exp += 30;
 
+    showPickup("⭐", "獲得30 EXP");
+
     showMessage(
       "⭐ 獲得30 EXP！"
     );
@@ -997,6 +1007,8 @@ function openChest() {
     player.maxHp += 10;
     player.hp += 10;
 
+    showPickup("❤️", "最大HP+10");
+
     showMessage(
       "❤️ 最大HP永久 +10"
     );
@@ -1008,6 +1020,8 @@ function openChest() {
 
     player.atk += 2;
 
+    showPickup("⚔️", "攻擊力+2");
+
     showMessage(
       "⚔️ 攻擊永久 +2"
     );
@@ -1018,6 +1032,8 @@ function openChest() {
   else {
 
     player.hasShield = true;
+
+    showPickup("🛡", "神聖護符");
 
     showMessage(
       "🛡 獲得神聖護符！\n下一場戰鬥第一次傷害減半"
@@ -1460,7 +1476,7 @@ function runAway() {
   if (currentMonster.type === "boss") {
 
     showMessage(
-      "👑 得罪了魔王還想跑，沒那麼容易！"
+      "👑 得罪了本王還想跑，沒那麼容易！"
     );
 
     return;
@@ -1785,9 +1801,25 @@ function updateBattleUI() {
 }
 
 
+// ======================
+// 🏰 更新樓層名稱
+// ======================
 
+function updateFloorTitle() {
 
+  if (currentFloor === maxFloor) {
 
+    document.getElementById("floorTitle").innerText =
+      "👑 最終決戰";
+
+  } else {
+
+    document.getElementById("floorTitle").innerText =
+      "第 " + currentFloor + " 層";
+
+  }
+
+}
 
 
 
@@ -2050,6 +2082,8 @@ function checkLevelUp() {
 
       player.level++;
 
+      showPickup("⭐", "LEVEL UP");
+
       player.needExp += 20;
 
       player.maxHp += 20;
@@ -2072,8 +2106,39 @@ function checkLevelUp() {
 
 }
 
+// ======================
+// 💀 觸發特效
+// ======================
+function showPickup(icon, text) {
 
+  const effect =
+    document.createElement("div");
 
+  effect.className = "pickup";
+
+  effect.innerHTML =
+    icon + " " + text;
+
+  const layer =
+    document.getElementById("effectLayer");
+
+  layer.appendChild(effect);
+
+  const cellSize = 50;
+
+  effect.style.left =
+    player.x * cellSize + cellSize / 2 + "px";
+
+  effect.style.top =
+    player.y * cellSize + cellSize / 2 + "px";
+
+  setTimeout(() => {
+
+    effect.remove();
+
+  }, 900);
+
+}
 
 
 
@@ -2116,7 +2181,7 @@ function gameOver() {
 
 function resetGame() {
 
-
+  currentFloor = 1;
 
   player.x = 1;
 
@@ -2193,7 +2258,7 @@ function resetGame() {
 
   updatePlayerUI();
 
-
+  updateFloorTitle();
 
   drawMap();
 
@@ -2272,7 +2337,7 @@ function nextFloor() {
 
   currentFloor++;
 
-
+  updateFloorTitle();
 
   showMessage(
     "🚪 進入第 "
