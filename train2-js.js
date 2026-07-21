@@ -1956,7 +1956,7 @@ function updatePlayerUI() {
 
 
   // MP BAR
-  let mpPercent = Math.min( 100, (player.mp / player.maxMp) * 100 );
+  let mpPercent = Math.min(100, (player.mp / player.maxMp) * 100);
   document.getElementById("playerMPBar")
     .style.width = (player.mp / player.maxMp * 100) + "%";
 }
@@ -2183,6 +2183,8 @@ function checkLevelUp() {
 
       player.level++;
 
+      checkSkillUnlock();
+
       showPickup("⭐", "LEVEL UP");
 
       player.needExp += 20;
@@ -2207,47 +2209,57 @@ function checkLevelUp() {
     }, 200);
 
   }, 500);
-  //======================
-  // 技能解鎖
-  //======================
 
-  switch (player.level) {
-
-    case 2:
-
-      skills.heavy.unlock = true;
-
-      showMessage("🎉 學會技能【重擊】");
-
-      break;
-
-    case 4:
-
-      skills.heal.unlock = true;
-
-      showMessage("🎉 學會技能【治癒術】");
-
-      break;
-
-    case 6:
-
-      skills.combo.unlock = true;
-
-      showMessage("🎉 學會技能【連擊】");
-
-      break;
-
-    case 8:
-
-      skills.finisher.unlock = true;
-
-      showMessage("🎉 學會技能【終結斬】");
-
-      break;
-
-  }
 }
 
+//技能解鎖函式
+function checkSkillUnlock() {
+
+
+  if (player.level >= 2 && !skills.heavy.unlock) {
+
+    skills.heavy.unlock = true;
+
+    showMessage(
+      "🎉 學會技能【重擊】"
+    );
+
+  }
+
+
+  if (player.level >= 4 && !skills.heal.unlock) {
+
+    skills.heal.unlock = true;
+
+    showMessage(
+      "🎉 學會技能【治癒術】"
+    );
+
+  }
+
+
+  if (player.level >= 6 && !skills.combo.unlock) {
+
+    skills.combo.unlock = true;
+
+    showMessage(
+      "🎉 學會技能【連擊】"
+    );
+
+  }
+
+
+  if (player.level >= 8 && !skills.finisher.unlock) {
+
+    skills.finisher.unlock = true;
+
+    showMessage(
+      "🎉 學會技能【終結斬】"
+    );
+
+  }
+
+}
 
 // 開關技能欄
 function openSkillMenu() {
