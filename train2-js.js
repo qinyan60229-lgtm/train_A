@@ -103,7 +103,7 @@ let exitUnlocked = false;
 
 const size = 10;
 
-let currentFloor = 10;
+let currentFloor = 1;
 
 let maxFloor = 10;
 
@@ -124,18 +124,18 @@ let player = {
   hp: 100,
   maxHp: 100,
 
+  mp: 50,
+  maxMp: 50,
+
   atk: 15,
 
   gold: 0,
 
   exp: 0,
-
   level: 1,
-
   needExp: 20,
 
   potion: 0,
-
   maxPotion: 10,
 
   bossTurn: 0,
@@ -146,6 +146,41 @@ let player = {
   hasShield: false,
   luckyCoin: false,
   image: "img/he.png"
+};
+
+// ======================
+// 🧙 新增技能
+// ======================
+
+let skills = {
+
+  heavy: {
+    unlock: false,
+    cost: 15,
+    cooldown: 3,
+    cd: 0
+  },      // 重擊
+
+  heal: {
+    unlock: false,
+    cost: 20,
+    cooldown: 4,
+    cd: 0
+  },       // 治癒
+
+  combo: {
+    unlock: false,
+    cost: 25,
+    cooldown: 3,
+    cd: 0
+  },     // 連擊
+
+  finisher: {
+    unlock: false,
+    cost: 40,
+    cooldown: 5,
+    cd: 0    // 終結斬
+  }
 };
 
 // ======================
@@ -1144,8 +1179,42 @@ function checkExploreComplete() {
 
 }
 
+// ======================
+// ⚔️ 切換背景函式
+// ======================
+function updateBattleBackground() {
 
+  const scene = document.getElementById("battleScene");
 
+  if (currentMonster && currentMonster.type === "boss") {
+
+    scene.style.backgroundImage =
+      "url(img/bb1.png)";
+
+  }
+
+  else if (currentFloor <= 3) {
+
+    scene.style.backgroundImage =
+      "url(img/bb5.png)";
+
+  }
+
+  else if (currentFloor <= 6) {
+
+    scene.style.backgroundImage =
+      "url(img/bb4.png)";
+
+  }
+
+  else {
+
+    scene.style.backgroundImage =
+      "url(img/bb3.png)";
+
+  }
+
+}
 
 // ======================
 // ⚔️ 開始戰鬥
@@ -1186,7 +1255,9 @@ function showBattle(monster = null) {
     "⚔️ 遭遇 " + currentMonster.name + "！"
   );
 
+  updateBattleBackground();
   updateBattleUI();
+  updateSkillUI();
 
 }
 
@@ -1463,8 +1534,10 @@ function monsterAttack() {
     return;
 
   }
-  updateBattleUI();
 
+  reduceSkillCooldown();
+  recoverMP();
+  updateBattleUI();
 
 }
 
@@ -1846,22 +1919,13 @@ function updatePlayerUI() {
 
 
   document.getElementById("playerHP").innerText =
-    "HP："
-    +
-    player.hp
-    +
-    " / "
-    +
-    player.maxHp;
-
-
+    "HP：" + player.hp + " / " + player.maxHp;
 
 
   // HP BAR
 
   document.getElementById("playerHPBar")
-    .style.width =
-    (
+    .style.width = (
       player.hp /
       player.maxHp *
       100
@@ -1884,6 +1948,17 @@ function updatePlayerUI() {
   //最大上限藥水
   document.getElementById("maxPotion").innerText =
     player.maxPotion;
+
+  // MP文字
+
+  document.getElementById("playerMP").innerText =
+    "MP：" + player.mp + " / " + player.maxMp;
+
+
+  // MP BAR
+  let mpPercent = Math.min( 100, (player.mp / player.maxMp) * 100 );
+  document.getElementById("playerMPBar")
+    .style.width = (player.mp / player.maxMp * 100) + "%";
 }
 
 
@@ -2042,7 +2117,40 @@ function addBattleLog(text) {
 
 }
 
+// 技能消耗檢查
+function useSkillCost(skill) {
 
+  if (player.mp < skill.cost) {
+
+    showMessage("❌ MP不足");
+
+    return false;
+  }
+
+
+  if (skill.cd > 0) {
+
+    showMessage(
+      "⏳ 技能冷卻中 剩餘 "
+      + skill.cd +
+      " 回合"
+    );
+
+    return false;
+  }
+
+
+  player.mp -= skill.cost;
+
+  skill.cd = skill.cooldown;
+
+
+  updatePlayerUI();
+
+
+  return true;
+
+}
 
 
 
@@ -2085,6 +2193,9 @@ function checkLevelUp() {
 
         player.maxHp;
 
+      player.maxMp += 10;
+      player.mp = player.maxMp;
+
       player.atk += 5;
 
       updatePlayerUI();
@@ -2096,7 +2207,416 @@ function checkLevelUp() {
     }, 200);
 
   }, 500);
+  //======================
+  // 技能解鎖
+  //======================
 
+  switch (player.level) {
+
+    case 2:
+
+      skills.heavy.unlock = true;
+
+      showMessage("🎉 學會技能【重擊】");
+
+      break;
+
+    case 4:
+
+      skills.heal.unlock = true;
+
+      showMessage("🎉 學會技能【治癒術】");
+
+      break;
+
+    case 6:
+
+      skills.combo.unlock = true;
+
+      showMessage("🎉 學會技能【連擊】");
+
+      break;
+
+    case 8:
+
+      skills.finisher.unlock = true;
+
+      showMessage("🎉 學會技能【終結斬】");
+
+      break;
+
+  }
+}
+
+
+// 開關技能欄
+function openSkillMenu() {
+
+  document
+    .getElementById("skillMenu")
+    .style.display = "block";
+
+}
+
+function closeSkillMenu() {
+
+  document
+    .getElementById("skillMenu")
+    .style.display = "none";
+
+}
+
+//MP回復函式
+function recoverMP() {
+
+  let recover = 5;
+
+
+  player.mp += recover;
+
+
+  if (player.mp > player.maxMp) {
+
+    player.mp = player.maxMp;
+
+  }
+
+
+  addBattleLog(
+    "💧 MP恢復 +" + recover
+  );
+
+
+  updatePlayerUI();
+
+}
+
+// 重擊
+function heavySlash() {
+
+  if (!skills.heavy.unlock) {
+
+    showMessage("尚未學會重擊");
+
+    return;
+
+  }
+
+  if (!useSkillCost(skills.heavy)) {
+    return;
+  }
+
+  closeSkillMenu();
+
+  if (Math.random() < 0.2) {
+
+    addBattleLog("❌ 重擊揮空！");
+
+    monsterAttack();
+
+    return;
+
+  }
+
+  currentMonster.hp -= player.atk * 2;
+
+  playSkillEffect("heavy");
+
+  playPlayerAttack();
+
+  playMonsterHit();
+
+  showDamageNumber(player.atk * 2);
+
+  updateBattleUI();
+
+  if (currentMonster.hp <= 0) {
+
+    endBattle();
+
+    return;
+
+  }
+
+  monsterAttack();
+
+}
+
+// 治癒術
+function healSkill() {
+
+  if (!skills.heal.unlock) {
+
+    showMessage("尚未學會治癒術");
+
+    return;
+
+  }
+
+  // ⭐ 加入 MP/CD 檢查
+  if (!useSkillCost(skills.heal)) {
+
+    return;
+
+  }
+
+  closeSkillMenu();
+
+  player.hp += 40;
+  playSkillEffect("heal");
+
+  if (player.hp > player.maxHp) {
+
+    player.hp = player.maxHp;
+
+  }
+
+  updateBattleUI();
+
+  updatePlayerUI();
+
+  showMessage("❤️ 恢復30HP");
+
+  monsterAttack();
+
+}
+
+// 連擊
+function comboAttack() {
+
+  if (!skills.combo.unlock) {
+
+    showMessage("尚未學會連擊");
+
+    return;
+
+  }
+
+  if (!useSkillCost(skills.combo)) {
+
+    return;
+
+  }
+
+  closeSkillMenu();
+
+  let damage = player.atk;
+
+  currentMonster.hp -= damage;
+
+  currentMonster.hp -= damage;
+  playSkillEffect("combo");
+
+  playPlayerAttack();
+
+  playMonsterHit();
+
+  showDamageNumber(damage * 2);
+
+  updateBattleUI();
+
+  if (currentMonster.hp <= 0) {
+
+    endBattle();
+
+    return;
+
+  }
+
+  monsterAttack();
+
+}
+
+// 終結斬
+function finisher() {
+
+  if (!skills.finisher.unlock) {
+
+    showMessage("尚未學會終結斬");
+
+    return;
+
+  }
+
+  if (!useSkillCost(skills.finisher)) {
+
+    return;
+
+  }
+
+  closeSkillMenu();
+
+  let damage;
+
+  if (currentMonster.hp <= currentMonster.maxHp * 0.3) {
+
+    damage = player.atk * 4;
+
+  } else {
+
+    damage = player.atk;
+
+  }
+
+  currentMonster.hp -= damage;
+  playSkillEffect("finisher");
+
+  playPlayerAttack();
+
+  playMonsterHit();
+
+  showDamageNumber(damage);
+
+  updateBattleUI();
+
+  if (currentMonster.hp <= 0) {
+
+    endBattle();
+
+    return;
+
+  }
+
+  monsterAttack();
+
+}
+
+// 共用技能消耗，避免技能重複
+function useSkillCost(skill) {
+
+  if (player.mp < skill.cost) {
+
+    showMessage("❌ MP不足");
+
+    return false;
+
+  }
+
+
+  if (skill.cd > 0) {
+
+    showMessage(
+      "技能冷卻中 剩餘 "
+      + skill.cd +
+      " 回合"
+    );
+
+    return false;
+
+  }
+
+
+  player.mp -= skill.cost;
+
+  skill.cd = skill.cooldown;
+
+
+  return true;
+
+}
+
+// 每次怪物攻擊時CD-1
+function reduceSkillCooldown() {
+
+  for (let key in skills) {
+
+    let skill = skills[key];
+
+    if (skill.cd > 0) {
+
+      skill.cd--;
+
+    }
+
+  }
+
+  updateSkillUI();
+
+}
+
+// 技能UI更新函式
+function updateSkillUI() {
+
+
+  let buttons = {
+
+    heavyBtn: skills.heavy,
+
+    healBtn: skills.heal,
+
+    comboBtn: skills.combo,
+
+    finisherBtn: skills.finisher
+
+  };
+
+
+
+  for (let id in buttons) {
+
+
+    let btn =
+      document.getElementById(id);
+
+
+
+    if (!btn) continue;
+
+
+
+    let skill =
+      buttons[id];
+
+
+
+    // 技能文字
+
+    let name =
+      btn.dataset.name;
+
+
+
+    if (skill.cd > 0) {
+
+
+      btn.innerText =
+        name +
+        " CD:" +
+        skill.cd;
+
+
+
+      // 冷卻灰色
+
+      btn.classList.add(
+        "skill-cooldown"
+      );
+
+
+      btn.disabled = true;
+
+
+
+    }
+    else {
+
+
+      btn.innerText =
+        name;
+
+
+      btn.classList.remove(
+        "skill-cooldown"
+      );
+
+
+      btn.disabled = false;
+
+
+    }
+
+
+  }
 }
 
 // ======================
@@ -2222,6 +2742,57 @@ function showDamageNumber(number) {
 
 }
 
+//技能特效函式
+function playSkillEffect(type) {
+
+  let scene =
+    document.getElementById("battleScene");
+
+  if (type === "heavy") {
+
+
+    scene.classList.add(
+      "heavy-effect"
+    );
+
+  }
+
+  if (type === "heal") {
+
+    scene.classList.add(
+      "heal-effect"
+    );
+
+  }
+
+  if (type === "combo") {
+
+    scene.classList.add(
+      "combo-effect"
+    );
+
+  }
+
+  if (type === "finisher") {
+
+    scene.classList.add(
+      "finisher-effect"
+    );
+
+  }
+
+  setTimeout(() => {
+
+    scene.classList.remove(
+      "heavy-effect",
+      "heal-effect",
+      "combo-effect",
+      "finisher-effect"
+    );
+
+  }, 500);
+
+}
 
 // ======================
 // 💀 GAME OVER
@@ -2274,22 +2845,20 @@ function resetGame() {
 
   player.maxHp = 100;
 
+  player.mp = 50;
 
+  player.maxMp = 50;
 
   player.atk = 15;
-
 
 
   player.level = 1;
 
 
-
   player.exp = 0;
 
 
-
   player.needExp = 20;
-
 
 
   player.gold = 0;

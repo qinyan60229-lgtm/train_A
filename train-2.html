@@ -37,6 +37,16 @@
 
                     <p id="playerHP">100 / 100</p>
 
+                    <p>💧 MP</p>
+
+                    <div class="status-bar">
+                        <div id="playerMPBar"></div>
+                    </div>
+
+                    <p id="playerMP">
+                        MP：50 / 50
+                    </p>
+
                     <p>✨ EXP</p>
                     <div class="status-bar exp-bar">
                         <div id="expBar"></div>
@@ -141,7 +151,7 @@
                                 </button>
 
 
-                                <button class="btn btn-primary">
+                                <button onclick="openSkillMenu()" class="btn btn-primary">
                                     ✨ 技能
                                 </button>
 
@@ -202,6 +212,42 @@
 
 
     </main>
+
+    <div id="skillMenu">
+
+        <h3>✨ 技能</h3>
+
+        <button onclick="heavySlash()" id="heavyBtn" data-name="⚔️ 重擊">
+
+            ⚔️ 重擊
+
+        </button>
+
+        <button onclick="healSkill()" id="healBtn" data-name="❤️ 治癒術">
+
+            ❤️ 治癒術
+
+        </button>
+
+        <button onclick="comboAttack()" id="comboBtn" data-name="⚡ 連擊">
+
+            ⚡ 連擊
+
+        </button>
+
+        <button onclick="finisher()" id="finisherBtn" data-name="🔥 終結斬">
+
+            🔥 終結斬
+
+        </button>
+
+        <button onclick="closeSkillMenu()">
+
+            返回
+
+        </button>
+
+    </div>
 
     <!-- 商店 -->
     <div id="shop">
