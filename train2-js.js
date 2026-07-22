@@ -200,6 +200,14 @@ let gameState = "map";
 let currentMonster = null;
 
 // ======================
+// 💬 訊息佇列
+// ======================
+
+let messageQueue = [];
+
+let isShowingMessage = false;
+
+// ======================
 // 👾 新增隨機怪物
 // ======================
 
@@ -2946,37 +2954,47 @@ function resetGame() {
 
 function showMessage(text) {
 
+  messageQueue.push(text);
 
+  if (!isShowingMessage) {
 
-  let box =
-    document.getElementById("messageBox");
+    nextMessage();
 
+  }
 
+}
 
-  if (!box) {
+function nextMessage() {
+
+  if (messageQueue.length === 0) {
+
+    isShowingMessage = false;
 
     return;
 
   }
 
+  isShowingMessage = true;
 
+  let box = document.getElementById("messageBox");
+
+  if (!box) return;
 
   box.style.display = "block";
 
-
-  box.innerText = text;
-
-
+  box.innerText = messageQueue.shift();
 
   setTimeout(() => {
 
-
     box.style.display = "none";
 
+    setTimeout(() => {
+
+      nextMessage();
+
+    }, 200);
 
   }, 2000);
-
-
 
 }
 
